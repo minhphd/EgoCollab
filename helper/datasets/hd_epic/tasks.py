@@ -1,10 +1,10 @@
 """Ground truth per HD-EPIC video: the annotated subgoal graph and which subgoal is worked on when.
 
-Built from the post-hoc task graphs in helper/annotations/hd_epic. Every narrated action belongs to
+Built from the post-hoc task graphs in annotations/ next to this file. Every narrated action belongs to
 at most one subgoal. A subgoal is done once its last action ends; the current subgoal at t is the one
 whose action runs at t, with pauses inside one subgoal kept.
 
-    python -m helper.bip.tasks export     # every video as a viewer episode (dataset hd_epic_task)
+    python -m helper.datasets.hd_epic.tasks export     # every video as a viewer episode (dataset hd_epic_task)
 """
 
 import json
@@ -14,9 +14,9 @@ from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 
-from ..datasets import posthoc_graph
-from ..datasets.episode import Action, Episode, Node, Segment, write_episode
-from ..datasets.hd_epic import DATA, EPISODES, action_times, load_framewise, load_narrations
+from ..episode import Action, Episode, Node, Segment, write_episode
+from . import posthoc_graph
+from .data import DATA, EPISODES, action_times, load_framewise, load_narrations
 
 
 @dataclass

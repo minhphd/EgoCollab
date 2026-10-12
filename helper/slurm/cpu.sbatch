@@ -1,6 +1,6 @@
 #!/bin/bash
 # Runs one Python command on CPUs with the project env, e.g. from the repo root:
-#   sbatch -M kingspeak --array=0-11 helper/slurm/cpu.sbatch python -m helper.bip.view --shard ARRAY/12
+#   sbatch -M kingspeak --array=0-11 helper/slurm/cpu.sbatch python -m helper.perception.frames --shard ARRAY/12
 # ARRAY in the arguments becomes the array task id.
 #SBATCH --job-name=cpu
 #SBATCH --account=kmarino

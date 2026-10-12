@@ -16,9 +16,9 @@ A primitive's `after` lists integers (same video) or "<video_id>-<index>" string
 import json
 from pathlib import Path
 
-from .episode import Node, Segment
+from ..episode import Node, Segment
 
-ANNOTATIONS = Path(__file__).resolve().parents[1] / "annotations" / "hd_epic"
+ANNOTATIONS = Path(__file__).resolve().parent / "annotations"
 MERGE_GAP_SEC = 2.0  # actions of one node closer than this form one segment
 CLIP_PAD_SEC = 1.0  # context shown before the first and after the last action of a clip
 

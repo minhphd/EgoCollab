@@ -2,7 +2,10 @@
 
 An object rests where it was picked up before its first move and where it was put down after each
 move (HD-EPIC scene-and-object-movements); while carried it has no resting place and is skipped.
-A fixation is gaze held on one object for `fix_min` s; it is reported when that time has passed.
+A fixation is gaze held on one object for `min_s` s; it is reported when that time has passed.
+
+    from helper.datasets.hd_epic.gaze3d import fixations, resting
+    fixations("P01-20240202-110250")   # [{"t": 12.3, "object": <id>, "visible": [<ids>]}, ...]
 """
 
 import json
@@ -11,7 +14,7 @@ from functools import cache
 
 import numpy as np
 
-from ..datasets.hd_epic import DATA
+from .data import DATA
 
 ANN = DATA / "annotations" / "scene-and-object-movements"
 FPS = 30
@@ -45,15 +48,19 @@ def resting(vid: str) -> list[dict]:
     return out
 
 
-def fixations(vid: str, cfg) -> list[dict]:
-    """Fixations in time order: {"t", "object" (instance id), "visible" (instance ids in view)}."""
+def fixations(vid: str, hz: float = 10.0, angle: float = 6.0, min_s: float = 0.3, fov: float = 50.0) -> list[dict]:
+    """Fixations in time order: {"t", "object" (instance id), "visible" (instance ids in view)}.
+
+    Gaze is sampled at `hz`; an object within `angle` degrees of the gaze ray is fixated, and objects
+    within `fov` degrees of the camera axis are visible.
+    """
     folder = DATA / "framewise" / vid[:3] / vid
     if not (folder / "framewise_info.jsonl").exists():
         return []
     cam = np.array(json.loads((folder / "device_calibration.json").read_text())["cameras"]["camera-rgb"]["T_device_camera"])
     axis_dev = cam[:3, 2]
     objs = resting(vid)
-    step = round(FPS / cfg.gaze_hz)
+    step = round(FPS / hz)
     samples = []  # (t, fixated id or None, visible ids)
     with open(folder / "framewise_info.jsonl") as f:
         for i, line in enumerate(f):
@@ -74,13 +81,13 @@ def fixations(vid: str, cfg) -> list[dict]:
             rays /= np.linalg.norm(rays, axis=1, keepdims=True)
             gaze_angle = np.degrees(np.arccos(np.clip(rays @ d, -1, 1)))
             view_angle = np.degrees(np.arccos(np.clip(rays @ (T[:, :3] @ axis_dev), -1, 1)))
-            visible = [ids[k] for k in np.flatnonzero(view_angle < cfg.fov)]
+            visible = [ids[k] for k in np.flatnonzero(view_angle < fov)]
             k = int(np.argmin(gaze_angle))
-            samples.append((t, ids[k] if gaze_angle[k] < cfg.fix_angle else None, visible))
+            samples.append((t, ids[k] if gaze_angle[k] < angle else None, visible))
     out, run = [], None
     for t, oid, visible in samples + [(np.inf, None, [])]:
         if run and oid == run[1]:
-            if not run[2] and t - run[0] >= cfg.fix_min:
+            if not run[2] and t - run[0] >= min_s:
                 out.append({"t": round(t, 2), "object": oid, "visible": sorted(set(visible) | {oid})})
                 run[2] = True
             continue

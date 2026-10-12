@@ -1,12 +1,30 @@
 """Gemini on Vertex AI, with the service account kept in a .env file (never printed or copied).
 
-    generate(cfg, text, images=[jpeg bytes], schema={...}) -> (reply text, usage dict, latency s)
+The .env holds GOOGLE_CREDENTIALS_JSON (the service-account JSON, multi-line), GOOGLE_CLOUD_PROJECT and
+GOOGLE_CLOUD_LOCATION. Models that answer on this project: gemini-3.5-flash, gemini-3.6-flash,
+gemini-3.1-pro-preview.
+
+    from helper.llm.gemini import Gemini, generate
+    text, usage, latency = generate("Reply with {\"ok\": true}", schema={"type": "object"})
+    text, usage, latency = generate("What is in view?", images=[jpeg_bytes], cfg=Gemini(model="gemini-3.6-flash"))
 """
 
 import json
 import time
+from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+@dataclass(frozen=True)
+class Gemini:
+    model: str = "gemini-3.5-flash"
+    env: str = str(ROOT.parent / "MiniWeb-src/MiniWeb/.env")  # service account for Vertex AI
+    thinking: str = "low"  # thinking level, "" for the model default
+    temperature: float = 0.0
+    max_tokens: int = 8192
 
 
 def env(path: str, name: str) -> str:
@@ -39,7 +57,9 @@ def client(path: str):
                         location=env(path, "GOOGLE_CLOUD_LOCATION") or "global")
 
 
-def generate(cfg, text: str, images: list[bytes] = (), schema: dict | None = None) -> tuple[str, dict, float]:
+def generate(text: str, images: list[bytes] = (), schema: dict | None = None, cfg: Gemini = Gemini()) -> tuple[str, dict, float]:
+    """Reply text, token usage and latency (s). With `schema`, the reply is JSON that follows it.
+    Network errors and rate limits are retried with backoff; after four failures the reply says so."""
     from google.genai import types
     conf = types.GenerateContentConfig(
         temperature=cfg.temperature, max_output_tokens=cfg.max_tokens,

@@ -15,9 +15,9 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from .episode import Episode, Node, Segment, precedence_dag, write_episode
+from ..episode import Episode, Node, Segment, precedence_dag, write_episode
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "ego_exo4d"
 EPISODES = REPO / "data" / "episodes"
 RAW_GAZE_SIZE = 1408  # 2D gaze pixels refer to the full-resolution Aria RGB frame

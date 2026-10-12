@@ -17,10 +17,10 @@ import numpy as np
 import pandas as pd
 
 from . import posthoc_graph
-from .episode import Action, Episode, Node, Segment, probe_video, write_episode
-from .sharepoint import SharedFolder
+from ..episode import Action, Episode, Node, Segment, probe_video, write_episode
+from ..sharepoint import SharedFolder
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "hd_epic"
 EPISODES = REPO / "data" / "episodes"
 ANNOTATIONS_GIT = "https://github.com/hd-epic/hd-epic-annotations"

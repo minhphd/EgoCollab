@@ -14,9 +14,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .episode import Action, Episode, Node, Segment, precedence_dag, probe_video, write_episode
+from ..episode import Action, Episode, Node, Segment, precedence_dag, probe_video, write_episode
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "industreal"
 EPISODES = REPO / "data" / "episodes"
 FPS = 10.0

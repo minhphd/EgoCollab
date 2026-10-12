@@ -6,16 +6,15 @@ dependencies:
   - ffmpeg
   - numpy
   - pandas
-  - matplotlib
   - tqdm
   - pip
   - pip:
       - opencv-python-headless
-      - google-genai                 # S2: Gemini on Vertex AI
+      - google-genai                 # Gemini on Vertex AI (helper/llm)
       - cryptography                 # service-account sign-in for google-genai
       - --extra-index-url https://download.pytorch.org/whl/cu130
-      - torch==2.14.0                # MiniLM narration embeddings in stream.py (CPU is enough)
+      - torch==2.14.0                # MiniLM embeddings (helper/llm/embed.py) and YOLO
       - transformers==5.17.0
-      - ultralytics                  # YOLOE objects and the YOLO hand detector (detect.py)
+      - ultralytics                  # YOLOE objects and the YOLO hand detector (helper/perception/detect.py)
       - ego4d>=1.7.3                 # Ego-Exo4D download
       - awscli
