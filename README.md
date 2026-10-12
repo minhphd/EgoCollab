@@ -2,8 +2,8 @@
 
 Three egocentric datasets with eye gaze and task structure, their annotations, and reusable tools: a
 Gemini client, sentence embeddings, YOLO object and hand detection, hand contacts and gaze fixations,
-a frame cache, and an episode viewer. This `clean` branch holds nothing else; the `main` branch keeps
-the fast-slow Bayesian inverse planning experiments built on these tools.
+a frame cache, and an episode viewer. The `backup` branch keeps the fast-slow Bayesian inverse
+planning experiments built on these tools.
 
 ## Layout
 
