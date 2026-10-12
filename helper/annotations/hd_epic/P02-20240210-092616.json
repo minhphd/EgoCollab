@@ -1,0 +1,134 @@
+{
+  "task": "Carrier bags folded",
+  "videos": [
+    "P02-20240210-092616"
+  ],
+  "nodes": [
+    {
+      "id": "bags_taken",
+      "label": "Carrier bags out of cupboard",
+      "group": "Bags",
+      "actions": {
+        "P02-20240210-092616": "1-6"
+      }
+    },
+    {
+      "id": "bags_folded",
+      "label": "Bags folded into pocket",
+      "group": "Bags",
+      "actions": {
+        "P02-20240210-092616": "7-20"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "bags_taken",
+      "to": "bags_folded",
+      "why": "Bags are taken out before folding"
+    }
+  ],
+  "primitives": {
+    "P02-20240210-092616": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": [
+          1
+        ]
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          2
+        ]
+      },
+      "5": {
+        "after": [
+          3,
+          4
+        ]
+      },
+      "6": {
+        "after": [
+          5
+        ]
+      },
+      "7": {
+        "after": [
+          3
+        ]
+      },
+      "8": {
+        "after": [
+          4
+        ]
+      },
+      "9": {
+        "after": [
+          8
+        ]
+      },
+      "10": {
+        "after": [
+          9
+        ]
+      },
+      "11": {
+        "after": [
+          10
+        ]
+      },
+      "12": {
+        "after": [
+          11
+        ]
+      },
+      "13": {
+        "after": [
+          12
+        ]
+      },
+      "14": {
+        "after": [
+          7
+        ]
+      },
+      "15": {
+        "after": [
+          14
+        ]
+      },
+      "16": {
+        "after": [
+          15
+        ]
+      },
+      "17": {
+        "after": [
+          16
+        ]
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": [
+          19
+        ]
+      }
+    }
+  }
+}

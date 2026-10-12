@@ -1,0 +1,332 @@
+{
+  "task": "Porridge with toppings",
+  "videos": [
+    "P05-20240425-083515"
+  ],
+  "nodes": [
+    {
+      "id": "porridge_heated",
+      "label": "Porridge heated and stirred",
+      "group": "Porridge",
+      "actions": {
+        "P05-20240425-083515": "2-11,20-29,52-53"
+      }
+    },
+    {
+      "id": "water_drunk",
+      "label": "Glass of water drunk",
+      "group": "Drink",
+      "actions": {
+        "P05-20240425-083515": "12-19"
+      }
+    },
+    {
+      "id": "toppings_added",
+      "label": "Banana, raisins, pecans in porridge",
+      "group": "Porridge",
+      "actions": {
+        "P05-20240425-083515": "31-34,36-37,39-41,43-44"
+      }
+    },
+    {
+      "id": "scales_away",
+      "label": "Scales and knife put away",
+      "group": "Cleanup",
+      "actions": {
+        "P05-20240425-083515": "46-51,54-55"
+      }
+    },
+    {
+      "id": "porridge_served",
+      "label": "Porridge bowl on plate",
+      "group": "Porridge",
+      "actions": {
+        "P05-20240425-083515": "56-60"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "porridge_heated",
+      "to": "toppings_added",
+      "why": "Toppings go into the heated porridge"
+    },
+    {
+      "from": "toppings_added",
+      "to": "scales_away",
+      "why": "The bowl leaves the scales once toppings are in"
+    },
+    {
+      "from": "scales_away",
+      "to": "porridge_served",
+      "why": "The bowl leaves the scales and the knife leaves the plate first"
+    }
+  ],
+  "primitives": {
+    "P05-20240425-083515": {
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          3
+        ]
+      },
+      "5": {
+        "after": [
+          4
+        ]
+      },
+      "6": {
+        "after": [
+          4
+        ]
+      },
+      "7": {
+        "after": []
+      },
+      "8": {
+        "after": []
+      },
+      "9": {
+        "after": [
+          7,
+          8
+        ]
+      },
+      "10": {
+        "after": [
+          9
+        ]
+      },
+      "11": {
+        "after": [
+          10
+        ]
+      },
+      "20": {
+        "after": [
+          11
+        ]
+      },
+      "21": {
+        "after": [
+          11
+        ]
+      },
+      "22": {
+        "after": [
+          21
+        ]
+      },
+      "23": {
+        "after": [
+          11,
+          21
+        ]
+      },
+      "24": {
+        "after": [
+          23
+        ]
+      },
+      "25": {
+        "after": []
+      },
+      "26": {
+        "after": [
+          24,
+          25
+        ]
+      },
+      "27": {
+        "after": [
+          26
+        ]
+      },
+      "28": {
+        "after": [
+          27
+        ]
+      },
+      "29": {
+        "after": [
+          27
+        ]
+      },
+      "52": {
+        "after": [
+          21
+        ]
+      },
+      "53": {
+        "after": [
+          11
+        ]
+      },
+      "12": {
+        "after": []
+      },
+      "13": {
+        "after": [
+          12
+        ]
+      },
+      "14": {
+        "after": [
+          13
+        ]
+      },
+      "15": {
+        "after": [
+          13
+        ]
+      },
+      "16": {
+        "after": [
+          12
+        ]
+      },
+      "17": {
+        "after": [
+          15,
+          16
+        ]
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "31": {
+        "after": []
+      },
+      "32": {
+        "after": [
+          31
+        ]
+      },
+      "33": {
+        "after": [
+          24,
+          32
+        ]
+      },
+      "34": {
+        "after": [
+          33
+        ]
+      },
+      "36": {
+        "after": [
+          31
+        ]
+      },
+      "37": {
+        "after": []
+      },
+      "39": {
+        "after": [
+          24,
+          37
+        ]
+      },
+      "40": {
+        "after": [
+          39
+        ]
+      },
+      "41": {
+        "after": []
+      },
+      "43": {
+        "after": [
+          24,
+          41
+        ]
+      },
+      "44": {
+        "after": [
+          43
+        ]
+      },
+      "46": {
+        "after": [
+          33,
+          39,
+          43
+        ]
+      },
+      "47": {
+        "after": [
+          46
+        ]
+      },
+      "48": {
+        "after": [
+          46
+        ]
+      },
+      "49": {
+        "after": []
+      },
+      "50": {
+        "after": [
+          48,
+          49
+        ]
+      },
+      "51": {
+        "after": [
+          50
+        ]
+      },
+      "54": {
+        "after": [
+          36
+        ]
+      },
+      "55": {
+        "after": [
+          54
+        ]
+      },
+      "56": {
+        "after": []
+      },
+      "57": {
+        "after": [
+          47
+        ]
+      },
+      "58": {
+        "after": [
+          33,
+          55,
+          57
+        ]
+      },
+      "59": {
+        "after": [
+          56,
+          58
+        ]
+      },
+      "60": {
+        "after": [
+          58
+        ]
+      }
+    }
+  }
+}

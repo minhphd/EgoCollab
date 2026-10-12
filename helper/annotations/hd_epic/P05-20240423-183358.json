@@ -1,0 +1,135 @@
+{
+  "task": "Clearing up after dinner",
+  "videos": [
+    "P05-20240423-183358"
+  ],
+  "nodes": [
+    {
+      "id": "food_covered",
+      "label": "Rice and curry covered off hob",
+      "group": "Food",
+      "actions": {
+        "P05-20240423-183358": "11-19"
+      }
+    },
+    {
+      "id": "dishes_loaded",
+      "label": "Used plate and spoons in dishwasher",
+      "group": "Cleanup",
+      "actions": {
+        "P05-20240423-183358": "2-10,20-23"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "food_covered",
+      "to": "dishes_loaded",
+      "why": "The wooden spoon leaves the curry before it is loaded"
+    }
+  ],
+  "primitives": {
+    "P05-20240423-183358": {
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": []
+      },
+      "4": {
+        "after": [
+          3
+        ]
+      },
+      "5": {
+        "after": [
+          2,
+          4
+        ]
+      },
+      "6": {
+        "after": [
+          5
+        ]
+      },
+      "7": {
+        "after": [
+          3
+        ]
+      },
+      "8": {
+        "after": [
+          7
+        ]
+      },
+      "9": {
+        "after": [
+          8
+        ]
+      },
+      "10": {
+        "after": [
+          6,
+          9
+        ]
+      },
+      "11": {
+        "after": []
+      },
+      "12": {
+        "after": [
+          11
+        ]
+      },
+      "13": {
+        "after": []
+      },
+      "14": {
+        "after": [
+          12,
+          13
+        ]
+      },
+      "15": {
+        "after": []
+      },
+      "16": {
+        "after": [
+          15
+        ]
+      },
+      "17": {
+        "after": []
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": []
+      },
+      "21": {
+        "after": [
+          18,
+          20
+        ]
+      },
+      "22": {
+        "after": [
+          21
+        ]
+      },
+      "23": {
+        "after": [
+          22
+        ]
+      }
+    }
+  }
+}

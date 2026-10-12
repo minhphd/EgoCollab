@@ -1,0 +1,484 @@
+{
+ "task": "Porridge and banana breakfast",
+ "videos": [
+  "P05-20240424-085204"
+ ],
+ "nodes": [
+  {
+   "id": "oats_weighed",
+   "label": "Oats weighed into bowl",
+   "group": "Porridge",
+   "actions": {
+    "P05-20240424-085204": "1-15"
+   }
+  },
+  {
+   "id": "liquids_added",
+   "label": "Milk and water added to oats",
+   "group": "Porridge",
+   "actions": {
+    "P05-20240424-085204": "16-29"
+   }
+  },
+  {
+   "id": "porridge_cooked",
+   "label": "Porridge microwaved and stirred",
+   "group": "Porridge",
+   "actions": {
+    "P05-20240424-085204": "30-37,97-105"
+   }
+  },
+  {
+   "id": "counter_wiped",
+   "label": "Counter tidied and wiped",
+   "group": "Cleanup",
+   "actions": {
+    "P05-20240424-085204": "38-63"
+   }
+  },
+  {
+   "id": "banana_sliced",
+   "label": "Banana sliced on plate",
+   "group": "Banana",
+   "actions": {
+    "P05-20240424-085204": "74-75,77,80-92"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "oats_weighed",
+   "to": "liquids_added",
+   "why": "Liquids go into the bowl of oats"
+  },
+  {
+   "from": "liquids_added",
+   "to": "porridge_cooked",
+   "why": "The oats are cooked in the liquid"
+  },
+  {
+   "from": "oats_weighed",
+   "to": "counter_wiped",
+   "why": "The scales are switched off after weighing"
+  }
+ ],
+ "primitives": {
+  "P05-20240424-085204": {
+   "1": {
+    "after": []
+   },
+   "10": {
+    "after": [
+     11
+    ]
+   },
+   "100": {
+    "after": [
+     37
+    ]
+   },
+   "101": {
+    "after": [
+     100
+    ]
+   },
+   "102": {
+    "after": [
+     101
+    ]
+   },
+   "103": {
+    "after": [
+     98,
+     102
+    ]
+   },
+   "104": {
+    "after": [
+     103
+    ]
+   },
+   "105": {
+    "after": [
+     104
+    ]
+   },
+   "11": {
+    "after": [
+     9
+    ]
+   },
+   "12": {
+    "after": [
+     7,
+     8,
+     11
+    ]
+   },
+   "13": {
+    "after": [
+     12
+    ]
+   },
+   "14": {
+    "after": [
+     13
+    ]
+   },
+   "15": {
+    "after": [
+     14
+    ]
+   },
+   "16": {
+    "after": []
+   },
+   "17": {
+    "after": [
+     16
+    ]
+   },
+   "18": {
+    "after": [
+     17
+    ]
+   },
+   "19": {
+    "after": [
+     17
+    ]
+   },
+   "2": {
+    "after": [
+     1
+    ]
+   },
+   "20": {
+    "after": [
+     19,
+     12
+    ]
+   },
+   "21": {
+    "after": [
+     20
+    ]
+   },
+   "22": {
+    "after": []
+   },
+   "23": {
+    "after": [
+     21,
+     22
+    ]
+   },
+   "24": {
+    "after": []
+   },
+   "25": {
+    "after": [
+     24
+    ]
+   },
+   "26": {
+    "after": [
+     25
+    ]
+   },
+   "27": {
+    "after": [
+     26,
+     20
+    ]
+   },
+   "28": {
+    "after": [
+     27
+    ]
+   },
+   "29": {
+    "after": [
+     28
+    ]
+   },
+   "3": {
+    "after": [
+     2
+    ]
+   },
+   "30": {
+    "after": [
+     28
+    ]
+   },
+   "31": {
+    "after": []
+   },
+   "32": {
+    "after": []
+   },
+   "33": {
+    "after": [
+     31,
+     32
+    ]
+   },
+   "34": {
+    "after": [
+     30
+    ]
+   },
+   "35": {
+    "after": [
+     33,
+     34
+    ]
+   },
+   "36": {
+    "after": [
+     35
+    ]
+   },
+   "37": {
+    "after": [
+     36
+    ]
+   },
+   "38": {
+    "after": []
+   },
+   "39": {
+    "after": [
+     38
+    ]
+   },
+   "4": {
+    "after": [
+     2
+    ]
+   },
+   "40": {
+    "after": []
+   },
+   "41": {
+    "after": []
+   },
+   "42": {
+    "after": []
+   },
+   "43": {
+    "after": [
+     40,
+     41,
+     42
+    ]
+   },
+   "44": {
+    "after": [
+     43
+    ]
+   },
+   "45": {
+    "after": [
+     8
+    ]
+   },
+   "46": {
+    "after": []
+   },
+   "47": {
+    "after": []
+   },
+   "48": {
+    "after": [
+     46,
+     47
+    ]
+   },
+   "49": {
+    "after": [
+     48
+    ]
+   },
+   "5": {
+    "after": []
+   },
+   "50": {
+    "after": [
+     49
+    ]
+   },
+   "51": {
+    "after": [
+     50
+    ]
+   },
+   "52": {
+    "after": [
+     51
+    ]
+   },
+   "53": {
+    "after": [
+     52
+    ]
+   },
+   "54": {
+    "after": [
+     53
+    ]
+   },
+   "55": {
+    "after": [
+     54
+    ]
+   },
+   "56": {
+    "after": [
+     55
+    ]
+   },
+   "57": {
+    "after": []
+   },
+   "58": {
+    "after": [
+     57
+    ]
+   },
+   "59": {
+    "after": [
+     58
+    ]
+   },
+   "6": {
+    "after": [
+     5
+    ]
+   },
+   "60": {
+    "after": [
+     58
+    ]
+   },
+   "61": {
+    "after": []
+   },
+   "62": {
+    "after": [
+     61,
+     59
+    ]
+   },
+   "63": {
+    "after": [
+     62
+    ]
+   },
+   "7": {
+    "after": [
+     4,
+     6
+    ]
+   },
+   "74": {
+    "after": []
+   },
+   "75": {
+    "after": [
+     74
+    ]
+   },
+   "77": {
+    "after": []
+   },
+   "8": {
+    "after": [
+     4
+    ]
+   },
+   "80": {
+    "after": [
+     77
+    ]
+   },
+   "81": {
+    "after": []
+   },
+   "82": {
+    "after": [
+     81
+    ]
+   },
+   "83": {
+    "after": [
+     82
+    ]
+   },
+   "84": {
+    "after": [
+     80
+    ]
+   },
+   "85": {
+    "after": [
+     82,
+     84
+    ]
+   },
+   "86": {
+    "after": [
+     85
+    ]
+   },
+   "87": {
+    "after": []
+   },
+   "88": {
+    "after": [
+     86,
+     87
+    ]
+   },
+   "89": {
+    "after": [
+     88
+    ]
+   },
+   "9": {
+    "after": []
+   },
+   "90": {
+    "after": [
+     86,
+     75
+    ]
+   },
+   "91": {
+    "after": [
+     90,
+     82
+    ]
+   },
+   "92": {
+    "after": [
+     91
+    ]
+   },
+   "97": {
+    "after": []
+   },
+   "98": {
+    "after": [
+     97
+    ]
+   },
+   "99": {
+    "after": [
+     98
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,359 @@
+{
+  "task": "Crisps and drinks",
+  "videos": [
+    "P03-20240216-223126"
+  ],
+  "nodes": [
+    {
+      "id": "crisps_in_bowl",
+      "label": "Crisps poured into bowl",
+      "group": "Crisps",
+      "actions": {
+        "P03-20240216-223126": "1-9,11-15"
+      }
+    },
+    {
+      "id": "crisps_stored",
+      "label": "Crisp bag clipped and stored",
+      "group": "Crisps",
+      "actions": {
+        "P03-20240216-223126": "16-21"
+      }
+    },
+    {
+      "id": "drinks_out",
+      "label": "Beer and ginger ale out of fridge",
+      "group": "Drinks",
+      "actions": {
+        "P03-20240216-223126": "22-33"
+      }
+    },
+    {
+      "id": "ginger_ale_poured",
+      "label": "Ginger ale poured into glass",
+      "group": "Drinks",
+      "actions": {
+        "P03-20240216-223126": "34-45"
+      }
+    },
+    {
+      "id": "beer_poured",
+      "label": "Beer opened and poured",
+      "group": "Drinks",
+      "actions": {
+        "P03-20240216-223126": "46,50,53-63,66-68"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "crisps_in_bowl",
+      "to": "crisps_stored",
+      "why": "The bag is resealed after pouring"
+    },
+    {
+      "from": "drinks_out",
+      "to": "ginger_ale_poured",
+      "why": "The ginger ale bottle comes from the fridge"
+    },
+    {
+      "from": "drinks_out",
+      "to": "beer_poured",
+      "why": "The beer bottle comes from the fridge"
+    }
+  ],
+  "primitives": {
+    "P03-20240216-223126": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": [
+          1
+        ]
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": []
+      },
+      "5": {
+        "after": [
+          3
+        ]
+      },
+      "6": {
+        "after": [
+          4
+        ]
+      },
+      "7": {
+        "after": [
+          4
+        ]
+      },
+      "8": {
+        "after": [
+          4
+        ]
+      },
+      "9": {
+        "after": [
+          7
+        ]
+      },
+      "11": {
+        "after": [
+          5
+        ]
+      },
+      "12": {
+        "after": [
+          7
+        ]
+      },
+      "13": {
+        "after": [
+          11
+        ]
+      },
+      "14": {
+        "after": [
+          13
+        ]
+      },
+      "15": {
+        "after": [
+          12,
+          14
+        ]
+      },
+      "16": {
+        "after": [
+          15
+        ]
+      },
+      "17": {
+        "after": []
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": [
+          16,
+          18
+        ]
+      },
+      "21": {
+        "after": [
+          20
+        ]
+      },
+      "22": {
+        "after": []
+      },
+      "23": {
+        "after": [
+          22
+        ]
+      },
+      "24": {
+        "after": [
+          23
+        ]
+      },
+      "25": {
+        "after": [
+          23
+        ]
+      },
+      "26": {
+        "after": [
+          22
+        ]
+      },
+      "27": {
+        "after": [
+          26
+        ]
+      },
+      "28": {
+        "after": [
+          26
+        ]
+      },
+      "29": {
+        "after": [
+          22
+        ]
+      },
+      "30": {
+        "after": [
+          29
+        ]
+      },
+      "31": {
+        "after": [
+          30
+        ]
+      },
+      "32": {
+        "after": [
+          31
+        ]
+      },
+      "33": {
+        "after": [
+          28,
+          32
+        ]
+      },
+      "34": {
+        "after": [
+          32
+        ]
+      },
+      "35": {
+        "after": [
+          34
+        ]
+      },
+      "36": {
+        "after": [
+          35
+        ]
+      },
+      "37": {
+        "after": []
+      },
+      "38": {
+        "after": [
+          35
+        ]
+      },
+      "39": {
+        "after": [
+          37,
+          38
+        ]
+      },
+      "40": {
+        "after": [
+          39
+        ]
+      },
+      "41": {
+        "after": [
+          35
+        ]
+      },
+      "42": {
+        "after": []
+      },
+      "43": {
+        "after": [
+          42
+        ]
+      },
+      "44": {
+        "after": [
+          41,
+          43
+        ]
+      },
+      "45": {
+        "after": [
+          44
+        ]
+      },
+      "46": {
+        "after": [
+          25
+        ]
+      },
+      "50": {
+        "after": [
+          46
+        ]
+      },
+      "53": {
+        "after": []
+      },
+      "54": {
+        "after": [
+          53
+        ]
+      },
+      "55": {
+        "after": [
+          50,
+          54
+        ]
+      },
+      "56": {
+        "after": [
+          55
+        ]
+      },
+      "57": {
+        "after": [
+          56
+        ]
+      },
+      "58": {
+        "after": [
+          57
+        ]
+      },
+      "59": {
+        "after": []
+      },
+      "60": {
+        "after": [
+          59
+        ]
+      },
+      "61": {
+        "after": [
+          55,
+          60
+        ]
+      },
+      "62": {
+        "after": [
+          61
+        ]
+      },
+      "63": {
+        "after": []
+      },
+      "66": {
+        "after": [
+          55,
+          63
+        ]
+      },
+      "67": {
+        "after": [
+          66
+        ]
+      },
+      "68": {
+        "after": [
+          66
+        ]
+      }
+    }
+  }
+}

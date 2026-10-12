@@ -1,0 +1,21 @@
+name: egocollab
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - ffmpeg
+  - numpy
+  - pandas
+  - matplotlib
+  - tqdm
+  - pip
+  - pip:
+      - opencv-python-headless
+      - google-genai                 # S2: Gemini on Vertex AI
+      - cryptography                 # service-account sign-in for google-genai
+      - --extra-index-url https://download.pytorch.org/whl/cu130
+      - torch==2.14.0                # MiniLM narration embeddings in stream.py (CPU is enough)
+      - transformers==5.17.0
+      - ultralytics                  # YOLOE objects and the YOLO hand detector (detect.py)
+      - ego4d>=1.7.3                 # Ego-Exo4D download
+      - awscli

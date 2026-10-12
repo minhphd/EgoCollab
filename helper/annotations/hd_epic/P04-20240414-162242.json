@@ -1,0 +1,518 @@
+{
+ "task": "Potato dish setup",
+ "videos": [
+  "P04-20240414-162242"
+ ],
+ "nodes": [
+  {
+   "id": "counter_cleared",
+   "label": "Board down, counter cleared",
+   "group": "Setup",
+   "actions": {
+    "P04-20240414-162242": "1-13"
+   }
+  },
+  {
+   "id": "cookware_out",
+   "label": "Pans and utensils on counter",
+   "group": "Setup",
+   "actions": {
+    "P04-20240414-162242": "14-43"
+   }
+  },
+  {
+   "id": "ginger_on_board",
+   "label": "Ginger piece on board",
+   "group": "Ingredients",
+   "actions": {
+    "P04-20240414-162242": "44-48"
+   }
+  },
+  {
+   "id": "potatoes_on_board",
+   "label": "Two potatoes on board",
+   "group": "Ingredients",
+   "actions": {
+    "P04-20240414-162242": "49-79"
+   }
+  },
+  {
+   "id": "packaging_binned",
+   "label": "Potato packaging binned",
+   "group": "Cleanup",
+   "actions": {
+    "P04-20240414-162242": "82-88"
+   }
+  },
+  {
+   "id": "oil_salt_out",
+   "label": "Olive oil and salt on board",
+   "group": "Ingredients",
+   "actions": {
+    "P04-20240414-162242": "89-92,95"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "counter_cleared",
+   "to": "ginger_on_board",
+   "why": "Ginger is placed on the board"
+  },
+  {
+   "from": "counter_cleared",
+   "to": "potatoes_on_board",
+   "why": "Potatoes are placed on the board"
+  },
+  {
+   "from": "counter_cleared",
+   "to": "oil_salt_out",
+   "why": "Oil and salt are placed on the board"
+  },
+  {
+   "from": "potatoes_on_board",
+   "to": "packaging_binned",
+   "why": "The bag is emptied before it is binned"
+  }
+ ],
+ "primitives": {
+  "P04-20240414-162242": {
+   "1": {
+    "after": []
+   },
+   "10": {
+    "after": []
+   },
+   "11": {
+    "after": [
+     10
+    ]
+   },
+   "12": {
+    "after": []
+   },
+   "13": {
+    "after": [
+     12
+    ]
+   },
+   "14": {
+    "after": []
+   },
+   "15": {
+    "after": [
+     14
+    ]
+   },
+   "16": {
+    "after": [
+     15
+    ]
+   },
+   "17": {
+    "after": [
+     16
+    ]
+   },
+   "18": {
+    "after": [
+     14
+    ]
+   },
+   "19": {
+    "after": [
+     15,
+     18
+    ]
+   },
+   "2": {
+    "after": [
+     1
+    ]
+   },
+   "20": {
+    "after": [
+     18
+    ]
+   },
+   "21": {
+    "after": [
+     17
+    ]
+   },
+   "22": {
+    "after": [
+     20,
+     21
+    ]
+   },
+   "23": {
+    "after": [
+     22
+    ]
+   },
+   "24": {
+    "after": [
+     23
+    ]
+   },
+   "25": {
+    "after": []
+   },
+   "26": {
+    "after": [
+     25
+    ]
+   },
+   "27": {
+    "after": [
+     26
+    ]
+   },
+   "28": {
+    "after": [
+     27
+    ]
+   },
+   "29": {
+    "after": [
+     27
+    ]
+   },
+   "3": {
+    "after": []
+   },
+   "30": {
+    "after": []
+   },
+   "31": {
+    "after": [
+     30
+    ]
+   },
+   "32": {
+    "after": [
+     31
+    ]
+   },
+   "33": {
+    "after": [
+     30
+    ]
+   },
+   "34": {
+    "after": [
+     33
+    ]
+   },
+   "35": {
+    "after": [
+     30
+    ]
+   },
+   "36": {
+    "after": [
+     35
+    ]
+   },
+   "37": {
+    "after": [
+     36,
+     32
+    ]
+   },
+   "38": {
+    "after": [
+     31,
+     33,
+     35
+    ]
+   },
+   "39": {
+    "after": [
+     37
+    ]
+   },
+   "4": {
+    "after": [
+     3
+    ]
+   },
+   "40": {
+    "after": [
+     39
+    ]
+   },
+   "41": {
+    "after": [
+     40
+    ]
+   },
+   "42": {
+    "after": [
+     24,
+     28
+    ]
+   },
+   "43": {
+    "after": [
+     34
+    ]
+   },
+   "44": {
+    "after": []
+   },
+   "45": {
+    "after": [
+     44
+    ]
+   },
+   "46": {
+    "after": [
+     45
+    ]
+   },
+   "47": {
+    "after": [
+     46,
+     2
+    ]
+   },
+   "48": {
+    "after": [
+     46
+    ]
+   },
+   "49": {
+    "after": []
+   },
+   "5": {
+    "after": [
+     4
+    ]
+   },
+   "50": {
+    "after": [
+     49
+    ]
+   },
+   "51": {
+    "after": []
+   },
+   "52": {
+    "after": [
+     50
+    ]
+   },
+   "53": {
+    "after": [
+     51
+    ]
+   },
+   "54": {
+    "after": [
+     53,
+     2
+    ]
+   },
+   "55": {
+    "after": []
+   },
+   "56": {
+    "after": [
+     55
+    ]
+   },
+   "57": {
+    "after": [
+     56
+    ]
+   },
+   "58": {
+    "after": [
+     56
+    ]
+   },
+   "59": {
+    "after": [
+     54
+    ]
+   },
+   "6": {
+    "after": []
+   },
+   "60": {
+    "after": [
+     58,
+     59
+    ]
+   },
+   "61": {
+    "after": [
+     60
+    ]
+   },
+   "62": {
+    "after": [
+     61
+    ]
+   },
+   "63": {
+    "after": [
+     61
+    ]
+   },
+   "64": {
+    "after": [
+     63
+    ]
+   },
+   "65": {
+    "after": [
+     61
+    ]
+   },
+   "66": {
+    "after": [
+     65
+    ]
+   },
+   "67": {
+    "after": [
+     66
+    ]
+   },
+   "68": {
+    "after": [
+     67
+    ]
+   },
+   "69": {
+    "after": [
+     64,
+     68
+    ]
+   },
+   "7": {
+    "after": [
+     6
+    ]
+   },
+   "70": {
+    "after": [
+     69
+    ]
+   },
+   "71": {
+    "after": []
+   },
+   "72": {
+    "after": [
+     71
+    ]
+   },
+   "73": {
+    "after": [
+     70
+    ]
+   },
+   "74": {
+    "after": [
+     73
+    ]
+   },
+   "75": {
+    "after": [
+     74
+    ]
+   },
+   "76": {
+    "after": [
+     71
+    ]
+   },
+   "77": {
+    "after": []
+   },
+   "78": {
+    "after": [
+     75,
+     77
+    ]
+   },
+   "79": {
+    "after": [
+     78
+    ]
+   },
+   "8": {
+    "after": [
+     7
+    ]
+   },
+   "82": {
+    "after": [
+     79
+    ]
+   },
+   "83": {
+    "after": [
+     79
+    ]
+   },
+   "84": {
+    "after": [
+     83
+    ]
+   },
+   "85": {
+    "after": [
+     82
+    ]
+   },
+   "86": {
+    "after": []
+   },
+   "87": {
+    "after": [
+     85,
+     86
+    ]
+   },
+   "88": {
+    "after": [
+     87
+    ]
+   },
+   "89": {
+    "after": []
+   },
+   "9": {
+    "after": []
+   },
+   "90": {
+    "after": [
+     89
+    ]
+   },
+   "91": {
+    "after": [
+     89
+    ]
+   },
+   "92": {
+    "after": [
+     90,
+     91,
+     2
+    ]
+   },
+   "95": {
+    "after": [
+     90,
+     91
+    ]
+   }
+  }
+ }
+}

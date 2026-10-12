@@ -1,0 +1,1454 @@
+{
+ "task": "Cappuccino and fresh orange juice",
+ "videos": [
+  "P01-20240202-110250"
+ ],
+ "nodes": [
+  {
+   "id": "coffee_brewed",
+   "label": "Coffee brewed in mug",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240202-110250": "1-12,25"
+   }
+  },
+  {
+   "id": "milk_frothing",
+   "label": "Milk frothing, milk put away",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240202-110250": "13-24"
+   }
+  },
+  {
+   "id": "cappuccino_done",
+   "label": "Froth added and stirred",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240202-110250": "76-90"
+   }
+  },
+  {
+   "id": "frother_clean",
+   "label": "Frother washed, on base",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240202-110250": "91-108"
+   }
+  },
+  {
+   "id": "juicer_ready",
+   "label": "Juicer and oranges ready",
+   "group": "Orange juice",
+   "actions": {
+    "P01-20240202-110250": "26-57"
+   }
+  },
+  {
+   "id": "oranges_juiced",
+   "label": "Oranges juiced",
+   "group": "Orange juice",
+   "actions": {
+    "P01-20240202-110250": "58-59,110-178"
+   }
+  },
+  {
+   "id": "juicer_washed",
+   "label": "Juicer parts washed",
+   "group": "Orange juice",
+   "actions": {
+    "P01-20240202-110250": "179-201"
+   }
+  },
+  {
+   "id": "juice_in_glass",
+   "label": "Juice poured into glass",
+   "group": "Orange juice",
+   "actions": {
+    "P01-20240202-110250": "203-211"
+   }
+  },
+  {
+   "id": "bowl_washed",
+   "label": "Processor bowl washed, drying",
+   "group": "Orange juice",
+   "actions": {
+    "P01-20240202-110250": "212-223"
+   }
+  },
+  {
+   "id": "bin_lined",
+   "label": "Food bin lined with bag",
+   "group": "Household",
+   "actions": {
+    "P01-20240202-110250": "60-71"
+   }
+  },
+  {
+   "id": "heating_on",
+   "label": "Heating switched on",
+   "group": "Household",
+   "actions": {
+    "P01-20240202-110250": "72-75"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "bin_lined",
+   "to": "oranges_juiced",
+   "why": "Spent peels go into the lined food bin"
+  },
+  {
+   "from": "cappuccino_done",
+   "to": "frother_clean",
+   "why": "The frother is washed once emptied"
+  },
+  {
+   "from": "coffee_brewed",
+   "to": "cappuccino_done",
+   "why": "Froth is added on top of the coffee"
+  },
+  {
+   "from": "juice_in_glass",
+   "to": "bowl_washed",
+   "why": "The bowl is washed once emptied"
+  },
+  {
+   "from": "juicer_ready",
+   "to": "oranges_juiced",
+   "why": "The orange must be out of the mesh bag"
+  },
+  {
+   "from": "juicer_washed",
+   "to": "juice_in_glass",
+   "why": "The strainer must be off before the bowl can be lifted"
+  },
+  {
+   "from": "milk_frothing",
+   "to": "cappuccino_done",
+   "why": "Only frothed milk can be poured in"
+  },
+  {
+   "from": "oranges_juiced",
+   "to": "juicer_washed",
+   "why": "The cone comes off only when juicing is over"
+  }
+ ],
+ "primitives": {
+  "P01-20240202-110250": {
+   "1": {
+    "label": "open upper cupboard",
+    "after": []
+   },
+   "2": {
+    "label": "reach into cupboard",
+    "after": [
+     1
+    ]
+   },
+   "3": {
+    "label": "pick up mug",
+    "after": [
+     2
+    ]
+   },
+   "4": {
+    "label": "inspect mug",
+    "after": [
+     3
+    ]
+   },
+   "5": {
+    "label": "close cupboard",
+    "after": [
+     3
+    ]
+   },
+   "6": {
+    "label": "flip coffee machine drip tray",
+    "after": []
+   },
+   "7": {
+    "label": "place mug under nozzle",
+    "after": [
+     3,
+     6
+    ]
+   },
+   "8": {
+    "label": "pick up coffee capsule",
+    "after": []
+   },
+   "9": {
+    "label": "press machine power button",
+    "after": []
+   },
+   "10": {
+    "label": "lift coffee machine handle",
+    "after": []
+   },
+   "11": {
+    "label": "insert capsule into machine",
+    "after": [
+     8,
+     10
+    ]
+   },
+   "12": {
+    "label": "pull down machine handle",
+    "after": [
+     11
+    ]
+   },
+   "13": {
+    "label": "open fridge",
+    "after": []
+   },
+   "14": {
+    "label": "pick up milk bottle",
+    "after": [
+     13
+    ]
+   },
+   "15": {
+    "label": "close fridge",
+    "after": [
+     14
+    ]
+   },
+   "16": {
+    "label": "slide frother closer",
+    "after": []
+   },
+   "17": {
+    "label": "open milk bottle",
+    "after": [
+     14
+    ]
+   },
+   "18": {
+    "label": "pour milk into frother",
+    "after": [
+     16,
+     17
+    ]
+   },
+   "19": {
+    "label": "close milk bottle",
+    "after": [
+     18
+    ]
+   },
+   "20": {
+    "label": "start milk frother",
+    "after": [
+     18
+    ]
+   },
+   "21": {
+    "label": "pick up milk bottle",
+    "after": [
+     19
+    ]
+   },
+   "22": {
+    "label": "open fridge",
+    "after": []
+   },
+   "23": {
+    "label": "put milk bottle in fridge",
+    "after": [
+     21,
+     22
+    ]
+   },
+   "24": {
+    "label": "close fridge",
+    "after": [
+     23
+    ]
+   },
+   "25": {
+    "label": "press long coffee button",
+    "after": [
+     7,
+     9,
+     12
+    ]
+   },
+   "26": {
+    "label": "open top drawer",
+    "after": []
+   },
+   "27": {
+    "label": "pick up scissors",
+    "after": [
+     26
+    ]
+   },
+   "28": {
+    "label": "remove scissors cover",
+    "after": [
+     27
+    ]
+   },
+   "29": {
+    "label": "cut open orange mesh",
+    "after": [
+     28
+    ]
+   },
+   "30": {
+    "label": "take out first orange",
+    "after": [
+     29
+    ]
+   },
+   "31": {
+    "label": "take out second orange",
+    "after": [
+     29
+    ]
+   },
+   "32": {
+    "label": "take out third orange",
+    "after": [
+     29
+    ]
+   },
+   "33": {
+    "label": "cover scissors",
+    "after": [
+     29
+    ]
+   },
+   "34": {
+    "label": "open drawer",
+    "after": []
+   },
+   "35": {
+    "label": "place scissors in drawer",
+    "after": [
+     33,
+     34
+    ]
+   },
+   "36": {
+    "label": "slide chopping board over",
+    "after": []
+   },
+   "37": {
+    "label": "place food processor on counter",
+    "after": []
+   },
+   "38": {
+    "label": "hold food processor plug",
+    "after": [
+     37
+    ]
+   },
+   "39": {
+    "label": "unplug other plug",
+    "after": []
+   },
+   "40": {
+    "label": "plug in food processor",
+    "after": [
+     38,
+     39
+    ]
+   },
+   "41": {
+    "label": "push plug into socket",
+    "after": [
+     40
+    ]
+   },
+   "42": {
+    "label": "remove food processor lid",
+    "after": [
+     37
+    ]
+   },
+   "43": {
+    "label": "put lid on shelf",
+    "after": [
+     42
+    ]
+   },
+   "44": {
+    "label": "open lower sliding cupboard",
+    "after": []
+   },
+   "45": {
+    "label": "search cupboard for part",
+    "after": [
+     44
+    ]
+   },
+   "46": {
+    "label": "pick up juicer part",
+    "after": [
+     44
+    ]
+   },
+   "47": {
+    "label": "slide cupboard closed",
+    "after": [
+     46
+    ]
+   },
+   "48": {
+    "label": "move stuck box",
+    "after": [
+     47
+    ]
+   },
+   "49": {
+    "label": "continue closing cupboard",
+    "after": [
+     48
+    ]
+   },
+   "50": {
+    "label": "push cupboard shut",
+    "after": [
+     49
+    ]
+   },
+   "51": {
+    "label": "place juicer part on bowl",
+    "after": [
+     42,
+     46
+    ]
+   },
+   "52": {
+    "label": "lock juicer part",
+    "after": [
+     51
+    ]
+   },
+   "53": {
+    "label": "reseat juicer cone",
+    "after": [
+     52
+    ]
+   },
+   "54": {
+    "label": "turn food processor dial",
+    "after": [
+     41
+    ]
+   },
+   "55": {
+    "label": "switch on socket",
+    "after": [
+     41
+    ]
+   },
+   "56": {
+    "label": "turn on food processor",
+    "after": [
+     53,
+     55
+    ]
+   },
+   "57": {
+    "label": "turn off food processor",
+    "after": [
+     56
+    ]
+   },
+   "58": {
+    "label": "pick up first orange",
+    "after": [
+     30
+    ]
+   },
+   "59": {
+    "label": "place orange on chopping board",
+    "after": [
+     58,
+     36
+    ]
+   },
+   "60": {
+    "label": "open drawer",
+    "after": []
+   },
+   "61": {
+    "label": "take green bag roll",
+    "after": [
+     60
+    ]
+   },
+   "62": {
+    "label": "pull bag from roll",
+    "after": [
+     61
+    ]
+   },
+   "63": {
+    "label": "feel for tear line",
+    "after": [
+     62
+    ]
+   },
+   "64": {
+    "label": "tear off one bag",
+    "after": [
+     62
+    ]
+   },
+   "65": {
+    "label": "return roll to drawer",
+    "after": [
+     64
+    ]
+   },
+   "66": {
+    "label": "close drawer",
+    "after": [
+     65
+    ]
+   },
+   "67": {
+    "label": "pull bag open",
+    "after": [
+     64
+    ]
+   },
+   "68": {
+    "label": "shake bag open",
+    "after": [
+     67
+    ]
+   },
+   "69": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "70": {
+    "label": "put bag in food bin",
+    "after": [
+     68,
+     69
+    ]
+   },
+   "71": {
+    "label": "close food bin lid",
+    "after": [
+     70
+    ]
+   },
+   "72": {
+    "label": "open boiler panel",
+    "after": []
+   },
+   "73": {
+    "label": "hold boiler panel open",
+    "after": [
+     72
+    ]
+   },
+   "74": {
+    "label": "press heating button",
+    "after": [
+     72
+    ]
+   },
+   "75": {
+    "label": "close boiler panel",
+    "after": [
+     74
+    ]
+   },
+   "76": {
+    "label": "turn mug handle left",
+    "after": [
+     25
+    ]
+   },
+   "77": {
+    "label": "pick up milk frother",
+    "after": [
+     20
+    ]
+   },
+   "78": {
+    "label": "tap frother on counter",
+    "after": [
+     77
+    ]
+   },
+   "79": {
+    "label": "pour froth into mug",
+    "after": [
+     78,
+     25
+    ]
+   },
+   "80": {
+    "label": "shake out remaining froth",
+    "after": [
+     79
+    ]
+   },
+   "81": {
+    "label": "place frother on counter",
+    "after": [
+     80
+    ]
+   },
+   "82": {
+    "label": "take wooden stirrer from box",
+    "after": []
+   },
+   "83": {
+    "label": "pass stirrer to right hand",
+    "after": [
+     82
+    ]
+   },
+   "84": {
+    "label": "stir coffee clockwise",
+    "after": [
+     83,
+     79
+    ]
+   },
+   "85": {
+    "label": "stir coffee counterclockwise",
+    "after": [
+     84
+    ]
+   },
+   "86": {
+    "label": "final stir, remove stirrer",
+    "after": [
+     85
+    ]
+   },
+   "87": {
+    "label": "shake stirrer",
+    "after": [
+     86
+    ]
+   },
+   "88": {
+    "label": "open trash bin lid",
+    "after": []
+   },
+   "89": {
+    "label": "throw stirrer in bin",
+    "after": [
+     86,
+     88
+    ]
+   },
+   "90": {
+    "label": "close trash bin lid",
+    "after": [
+     89
+    ]
+   },
+   "91": {
+    "label": "pick up milk frother",
+    "after": [
+     81
+    ]
+   },
+   "92": {
+    "label": "open tap",
+    "after": []
+   },
+   "93": {
+    "label": "rinse frother under tap",
+    "after": [
+     91,
+     92
+    ]
+   },
+   "94": {
+    "label": "clean inside frother with finger",
+    "after": [
+     93
+    ]
+   },
+   "95": {
+    "label": "empty water from frother",
+    "after": [
+     93
+    ]
+   },
+   "96": {
+    "label": "remove whisk from frother",
+    "after": [
+     91
+    ]
+   },
+   "97": {
+    "label": "rinse frother again",
+    "after": [
+     93,
+     96
+    ]
+   },
+   "98": {
+    "label": "clean inside frother with fingers",
+    "after": [
+     97
+    ]
+   },
+   "99": {
+    "label": "pick up sponge",
+    "after": []
+   },
+   "100": {
+    "label": "insert sponge into frother",
+    "after": [
+     99,
+     91
+    ]
+   },
+   "101": {
+    "label": "scrub frother with sponge",
+    "after": [
+     100
+    ]
+   },
+   "102": {
+    "label": "rinse frother, put down sponge",
+    "after": [
+     101
+    ]
+   },
+   "103": {
+    "label": "pick up frother whisk",
+    "after": [
+     96
+    ]
+   },
+   "104": {
+    "label": "close tap",
+    "after": [
+     102
+    ]
+   },
+   "105": {
+    "label": "empty water from frother",
+    "after": [
+     102
+    ]
+   },
+   "106": {
+    "label": "put whisk into frother",
+    "after": [
+     103,
+     105
+    ]
+   },
+   "107": {
+    "label": "place frother on base",
+    "after": [
+     106
+    ]
+   },
+   "108": {
+    "label": "put lid on frother",
+    "after": [
+     107
+    ]
+   },
+   "110": {
+    "label": "pick up knife",
+    "after": []
+   },
+   "111": {
+    "label": "cut orange in half",
+    "after": [
+     59,
+     110
+    ]
+   },
+   "112": {
+    "label": "put down knife, take half",
+    "after": [
+     111
+    ]
+   },
+   "113": {
+    "label": "place orange half on cone",
+    "after": [
+     112,
+     53
+    ]
+   },
+   "114": {
+    "label": "turn on food processor",
+    "after": [
+     113,
+     55
+    ]
+   },
+   "115": {
+    "label": "press orange half on cone",
+    "after": [
+     114
+    ]
+   },
+   "116": {
+    "label": "continue pressing orange half",
+    "after": [
+     115
+    ]
+   },
+   "117": {
+    "label": "turn off food processor",
+    "after": [
+     116
+    ]
+   },
+   "118": {
+    "label": "remove orange skin from cone",
+    "after": [
+     117
+    ]
+   },
+   "119": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "120": {
+    "label": "throw peel into food bin",
+    "after": [
+     118,
+     119,
+     70
+    ]
+   },
+   "121": {
+    "label": "pick up second orange half",
+    "after": [
+     111
+    ]
+   },
+   "122": {
+    "label": "place orange half on cone",
+    "after": [
+     121,
+     118
+    ]
+   },
+   "123": {
+    "label": "turn on food processor",
+    "after": [
+     122,
+     117
+    ]
+   },
+   "124": {
+    "label": "press orange half on cone",
+    "after": [
+     123
+    ]
+   },
+   "125": {
+    "label": "turn off food processor",
+    "after": [
+     124
+    ]
+   },
+   "126": {
+    "label": "remove and check orange skin",
+    "after": [
+     125
+    ]
+   },
+   "127": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "128": {
+    "label": "throw peel into food bin",
+    "after": [
+     126,
+     127,
+     70
+    ]
+   },
+   "129": {
+    "label": "pick up second orange",
+    "after": [
+     31
+    ]
+   },
+   "130": {
+    "label": "place orange on chopping board",
+    "after": [
+     129,
+     36
+    ]
+   },
+   "131": {
+    "label": "pick up knife",
+    "after": []
+   },
+   "132": {
+    "label": "cut orange in half",
+    "after": [
+     130,
+     131
+    ]
+   },
+   "133": {
+    "label": "put down knife",
+    "after": [
+     132
+    ]
+   },
+   "134": {
+    "label": "pick up orange half",
+    "after": [
+     132
+    ]
+   },
+   "135": {
+    "label": "place orange half on cone",
+    "after": [
+     134,
+     53
+    ]
+   },
+   "136": {
+    "label": "turn on food processor",
+    "after": [
+     135,
+     55
+    ]
+   },
+   "137": {
+    "label": "press orange half on cone",
+    "after": [
+     136
+    ]
+   },
+   "138": {
+    "label": "turn off food processor",
+    "after": [
+     137
+    ]
+   },
+   "139": {
+    "label": "open bin, remove orange skin",
+    "after": [
+     138
+    ]
+   },
+   "140": {
+    "label": "throw peel into food bin",
+    "after": [
+     139,
+     70
+    ]
+   },
+   "141": {
+    "label": "pick up second orange half",
+    "after": [
+     132
+    ]
+   },
+   "142": {
+    "label": "place orange half on cone",
+    "after": [
+     141,
+     139
+    ]
+   },
+   "143": {
+    "label": "turn on food processor",
+    "after": [
+     142,
+     138
+    ]
+   },
+   "144": {
+    "label": "press orange half on cone",
+    "after": [
+     143
+    ]
+   },
+   "145": {
+    "label": "turn off food processor",
+    "after": [
+     144
+    ]
+   },
+   "146": {
+    "label": "remove skin, open bin lid",
+    "after": [
+     145
+    ]
+   },
+   "147": {
+    "label": "throw peel into food bin",
+    "after": [
+     146,
+     70
+    ]
+   },
+   "148": {
+    "label": "pick up third orange",
+    "after": [
+     32
+    ]
+   },
+   "149": {
+    "label": "place orange on chopping board",
+    "after": [
+     148,
+     36
+    ]
+   },
+   "150": {
+    "label": "pick up knife",
+    "after": []
+   },
+   "151": {
+    "label": "cut orange in half",
+    "after": [
+     149,
+     150
+    ]
+   },
+   "152": {
+    "label": "put down knife",
+    "after": [
+     151
+    ]
+   },
+   "153": {
+    "label": "stop orange half rolling",
+    "after": [
+     151
+    ]
+   },
+   "154": {
+    "label": "pick up orange half",
+    "after": [
+     151
+    ]
+   },
+   "155": {
+    "label": "place orange half on cone",
+    "after": [
+     154,
+     53
+    ]
+   },
+   "156": {
+    "label": "turn on food processor",
+    "after": [
+     155,
+     55
+    ]
+   },
+   "157": {
+    "label": "press orange half on cone",
+    "after": [
+     156
+    ]
+   },
+   "158": {
+    "label": "turn off food processor",
+    "after": [
+     157
+    ]
+   },
+   "159": {
+    "label": "lift and check orange half",
+    "after": [
+     158
+    ]
+   },
+   "160": {
+    "label": "replace orange half on cone",
+    "after": [
+     159
+    ]
+   },
+   "161": {
+    "label": "turn on food processor",
+    "after": [
+     160,
+     158
+    ]
+   },
+   "162": {
+    "label": "turn off food processor",
+    "after": [
+     161
+    ]
+   },
+   "163": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "164": {
+    "label": "throw peel into food bin",
+    "after": [
+     162,
+     163,
+     70
+    ]
+   },
+   "165": {
+    "label": "pick up second orange half",
+    "after": [
+     151
+    ]
+   },
+   "166": {
+    "label": "place orange half on cone",
+    "after": [
+     165,
+     164
+    ]
+   },
+   "167": {
+    "label": "turn on food processor",
+    "after": [
+     166,
+     162
+    ]
+   },
+   "168": {
+    "label": "press orange half on cone",
+    "after": [
+     167
+    ]
+   },
+   "169": {
+    "label": "turn off food processor",
+    "after": [
+     168
+    ]
+   },
+   "170": {
+    "label": "check and reseat orange half",
+    "after": [
+     169
+    ]
+   },
+   "171": {
+    "label": "turn on food processor",
+    "after": [
+     170
+    ]
+   },
+   "172": {
+    "label": "turn off food processor",
+    "after": [
+     171
+    ]
+   },
+   "173": {
+    "label": "remove orange skin from cone",
+    "after": [
+     172
+    ]
+   },
+   "174": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "175": {
+    "label": "throw peel into food bin",
+    "after": [
+     173,
+     174,
+     70
+    ]
+   },
+   "176": {
+    "label": "pick up knife",
+    "after": []
+   },
+   "177": {
+    "label": "push pulp through strainer",
+    "after": [
+     176,
+     128,
+     147,
+     175
+    ]
+   },
+   "178": {
+    "label": "put down knife",
+    "after": [
+     177
+    ]
+   },
+   "179": {
+    "label": "remove cone from juicer",
+    "after": [
+     177
+    ]
+   },
+   "180": {
+    "label": "shake cone",
+    "after": [
+     179
+    ]
+   },
+   "181": {
+    "label": "hold cone under running tap",
+    "after": [
+     179
+    ]
+   },
+   "182": {
+    "label": "rinse cone",
+    "after": [
+     181
+    ]
+   },
+   "183": {
+    "label": "pick up sponge",
+    "after": []
+   },
+   "184": {
+    "label": "wipe cone with sponge",
+    "after": [
+     182,
+     183
+    ]
+   },
+   "185": {
+    "label": "put down sponge",
+    "after": [
+     184
+    ]
+   },
+   "186": {
+    "label": "rinse cone",
+    "after": [
+     184
+    ]
+   },
+   "187": {
+    "label": "turn off tap",
+    "after": [
+     186
+    ]
+   },
+   "188": {
+    "label": "place cone in drainer",
+    "after": [
+     186
+    ]
+   },
+   "189": {
+    "label": "unlock juicer strainer",
+    "after": [
+     177
+    ]
+   },
+   "190": {
+    "label": "lift juicer strainer",
+    "after": [
+     189
+    ]
+   },
+   "191": {
+    "label": "open food bin lid",
+    "after": []
+   },
+   "192": {
+    "label": "dump pulp into food bin",
+    "after": [
+     190,
+     191,
+     70
+    ]
+   },
+   "193": {
+    "label": "knock strainer on bin rim",
+    "after": [
+     192
+    ]
+   },
+   "194": {
+    "label": "close food bin lid",
+    "after": [
+     193
+    ]
+   },
+   "195": {
+    "label": "place strainer under tap",
+    "after": [
+     193
+    ]
+   },
+   "196": {
+    "label": "open tap",
+    "after": []
+   },
+   "197": {
+    "label": "rinse strainer",
+    "after": [
+     195,
+     196
+    ]
+   },
+   "198": {
+    "label": "turn strainer upright",
+    "after": [
+     197
+    ]
+   },
+   "199": {
+    "label": "continue rinsing strainer",
+    "after": [
+     198
+    ]
+   },
+   "200": {
+    "label": "close tap",
+    "after": [
+     199
+    ]
+   },
+   "201": {
+    "label": "place strainer in drainer",
+    "after": [
+     199
+    ]
+   },
+   "203": {
+    "label": "open cupboard",
+    "after": []
+   },
+   "204": {
+    "label": "pick up glass",
+    "after": [
+     203
+    ]
+   },
+   "205": {
+    "label": "turn glass upright",
+    "after": [
+     204
+    ]
+   },
+   "206": {
+    "label": "place glass on counter",
+    "after": [
+     205
+    ]
+   },
+   "207": {
+    "label": "unlock food processor bowl",
+    "after": [
+     190
+    ]
+   },
+   "208": {
+    "label": "lift food processor bowl",
+    "after": [
+     207
+    ]
+   },
+   "209": {
+    "label": "pick up glass",
+    "after": [
+     206
+    ]
+   },
+   "210": {
+    "label": "pour juice into glass",
+    "after": [
+     208,
+     209
+    ]
+   },
+   "211": {
+    "label": "place glass on counter",
+    "after": [
+     210
+    ]
+   },
+   "212": {
+    "label": "place bowl under tap",
+    "after": [
+     210
+    ]
+   },
+   "213": {
+    "label": "open tap",
+    "after": []
+   },
+   "214": {
+    "label": "rinse bowl",
+    "after": [
+     212,
+     213
+    ]
+   },
+   "215": {
+    "label": "close tap",
+    "after": [
+     214
+    ]
+   },
+   "216": {
+    "label": "pick up sponge",
+    "after": []
+   },
+   "217": {
+    "label": "scrub bowl with sponge",
+    "after": [
+     214,
+     216
+    ]
+   },
+   "218": {
+    "label": "put down sponge",
+    "after": [
+     217
+    ]
+   },
+   "219": {
+    "label": "open tap",
+    "after": []
+   },
+   "220": {
+    "label": "rinse bowl",
+    "after": [
+     217,
+     219
+    ]
+   },
+   "221": {
+    "label": "turn off tap",
+    "after": [
+     220
+    ]
+   },
+   "222": {
+    "label": "tilt bowl to drain",
+    "after": [
+     220
+    ]
+   },
+   "223": {
+    "label": "place bowl on drainer",
+    "after": [
+     222
+    ]
+   }
+  }
+ }
+}

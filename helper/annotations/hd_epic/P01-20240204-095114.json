@@ -1,0 +1,492 @@
+{
+  "task": "Latte and cereal breakfast",
+  "videos": [
+    "P01-20240204-095114"
+  ],
+  "nodes": [
+    {
+      "id": "milk_out",
+      "label": "Milk bottle on counter",
+      "group": "Prep",
+      "actions": {
+        "P01-20240204-095114": "1-4"
+      }
+    },
+    {
+      "id": "coffee_brewed",
+      "label": "Coffee brewed into mug",
+      "group": "Coffee",
+      "actions": {
+        "P01-20240204-095114": "5-8,10-15,41,56"
+      }
+    },
+    {
+      "id": "milk_frothing",
+      "label": "Milk frothing in frother",
+      "group": "Coffee",
+      "actions": {
+        "P01-20240204-095114": "9,16-24"
+      }
+    },
+    {
+      "id": "latte_mixed",
+      "label": "Frothed milk stirred into coffee",
+      "group": "Coffee",
+      "actions": {
+        "P01-20240204-095114": "53-55,57-61,73-81"
+      }
+    },
+    {
+      "id": "cereal_ready",
+      "label": "Bowl of cereal with milk",
+      "group": "Cereal",
+      "actions": {
+        "P01-20240204-095114": "25-35,39-40,42-52"
+      }
+    },
+    {
+      "id": "milk_away",
+      "label": "Milk back in fridge",
+      "group": "Cleanup",
+      "actions": {
+        "P01-20240204-095114": "36-38"
+      }
+    },
+    {
+      "id": "frother_rinsed",
+      "label": "Milk frother rinsed",
+      "group": "Cleanup",
+      "actions": {
+        "P01-20240204-095114": "62-71"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "milk_out",
+      "to": "milk_frothing",
+      "why": "Milk is poured into the frother"
+    },
+    {
+      "from": "milk_out",
+      "to": "cereal_ready",
+      "why": "Milk is poured over the cereal"
+    },
+    {
+      "from": "coffee_brewed",
+      "to": "latte_mixed",
+      "why": "Frothed milk is poured onto the brewed coffee"
+    },
+    {
+      "from": "milk_frothing",
+      "to": "latte_mixed",
+      "why": "The frothed milk goes into the mug"
+    },
+    {
+      "from": "milk_frothing",
+      "to": "milk_away",
+      "why": "Milk is stored once all pours are done"
+    },
+    {
+      "from": "cereal_ready",
+      "to": "milk_away",
+      "why": "Milk is stored once all pours are done"
+    },
+    {
+      "from": "latte_mixed",
+      "to": "frother_rinsed",
+      "why": "The frother is rinsed once emptied"
+    }
+  ],
+  "primitives": {
+    "P01-20240204-095114": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": [
+          1
+        ]
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          2
+        ]
+      },
+      "5": {
+        "after": []
+      },
+      "6": {
+        "after": []
+      },
+      "7": {
+        "after": [
+          5,
+          6
+        ]
+      },
+      "8": {
+        "after": []
+      },
+      "9": {
+        "after": []
+      },
+      "10": {
+        "after": []
+      },
+      "11": {
+        "after": [
+          10
+        ]
+      },
+      "12": {
+        "after": [
+          11
+        ]
+      },
+      "13": {
+        "after": []
+      },
+      "14": {
+        "after": [
+          11,
+          13
+        ]
+      },
+      "15": {
+        "after": [
+          14
+        ]
+      },
+      "16": {
+        "after": [
+          4
+        ]
+      },
+      "17": {
+        "after": [
+          16
+        ]
+      },
+      "18": {
+        "after": [
+          9,
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": [
+          18
+        ]
+      },
+      "21": {
+        "after": [
+          18
+        ]
+      },
+      "22": {
+        "after": []
+      },
+      "23": {
+        "after": [
+          22
+        ]
+      },
+      "24": {
+        "after": [
+          18,
+          23
+        ]
+      },
+      "25": {
+        "after": []
+      },
+      "26": {
+        "after": [
+          25
+        ]
+      },
+      "27": {
+        "after": [
+          26
+        ]
+      },
+      "28": {
+        "after": [
+          4
+        ]
+      },
+      "29": {
+        "after": [
+          26,
+          28
+        ]
+      },
+      "30": {
+        "after": [
+          28
+        ]
+      },
+      "31": {
+        "after": [
+          29,
+          30
+        ]
+      },
+      "32": {
+        "after": [
+          31
+        ]
+      },
+      "33": {
+        "after": [
+          32
+        ]
+      },
+      "34": {
+        "after": [
+          33
+        ]
+      },
+      "35": {
+        "after": [
+          34
+        ]
+      },
+      "36": {
+        "after": []
+      },
+      "37": {
+        "after": [
+          18,
+          35,
+          36
+        ]
+      },
+      "38": {
+        "after": [
+          37
+        ]
+      },
+      "39": {
+        "after": []
+      },
+      "40": {
+        "after": [
+          39
+        ]
+      },
+      "41": {
+        "after": [
+          7,
+          8,
+          15
+        ]
+      },
+      "42": {
+        "after": [
+          40
+        ]
+      },
+      "43": {
+        "after": [
+          29,
+          42
+        ]
+      },
+      "44": {
+        "after": [
+          40
+        ]
+      },
+      "45": {
+        "after": [
+          29,
+          44
+        ]
+      },
+      "46": {
+        "after": [
+          44
+        ]
+      },
+      "47": {
+        "after": [
+          46
+        ]
+      },
+      "48": {
+        "after": [
+          47
+        ]
+      },
+      "49": {
+        "after": []
+      },
+      "50": {
+        "after": [
+          49
+        ]
+      },
+      "51": {
+        "after": [
+          31,
+          45,
+          50
+        ]
+      },
+      "52": {
+        "after": [
+          51
+        ]
+      },
+      "53": {
+        "after": []
+      },
+      "54": {
+        "after": [
+          53
+        ]
+      },
+      "55": {
+        "after": [
+          54
+        ]
+      },
+      "56": {
+        "after": [
+          41
+        ]
+      },
+      "57": {
+        "after": [
+          24
+        ]
+      },
+      "58": {
+        "after": [
+          57
+        ]
+      },
+      "59": {
+        "after": [
+          41,
+          58
+        ]
+      },
+      "60": {
+        "after": [
+          59
+        ]
+      },
+      "61": {
+        "after": [
+          54,
+          59
+        ]
+      },
+      "62": {
+        "after": [
+          60
+        ]
+      },
+      "63": {
+        "after": []
+      },
+      "64": {
+        "after": [
+          62,
+          63
+        ]
+      },
+      "65": {
+        "after": [
+          64
+        ]
+      },
+      "66": {
+        "after": [
+          64
+        ]
+      },
+      "67": {
+        "after": []
+      },
+      "68": {
+        "after": [
+          66,
+          67
+        ]
+      },
+      "69": {
+        "after": [
+          68
+        ]
+      },
+      "70": {
+        "after": [
+          68
+        ]
+      },
+      "71": {
+        "after": [
+          70
+        ]
+      },
+      "73": {
+        "after": [
+          61
+        ]
+      },
+      "74": {
+        "after": [
+          61
+        ]
+      },
+      "75": {
+        "after": [
+          61
+        ]
+      },
+      "76": {
+        "after": [
+          74
+        ]
+      },
+      "77": {
+        "after": [
+          76
+        ]
+      },
+      "78": {
+        "after": []
+      },
+      "79": {
+        "after": [
+          77,
+          78
+        ]
+      },
+      "80": {
+        "after": [
+          79
+        ]
+      },
+      "81": {
+        "after": [
+          76
+        ]
+      }
+    }
+  }
+}

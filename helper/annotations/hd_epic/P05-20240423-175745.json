@@ -1,0 +1,175 @@
+{
+  "task": "Curry returned to oven",
+  "videos": [
+    "P05-20240423-175745"
+  ],
+  "nodes": [
+    {
+      "id": "curry_stirred",
+      "label": "Curry stirred on cooker",
+      "group": "Curry",
+      "actions": {
+        "P05-20240423-175745": "2-21"
+      }
+    },
+    {
+      "id": "curry_in_oven",
+      "label": "Covered curry in top oven",
+      "group": "Curry",
+      "actions": {
+        "P05-20240423-175745": "22-26,30-32"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "curry_stirred",
+      "to": "curry_in_oven",
+      "why": "The lid comes off for stirring before it goes back on"
+    }
+  ],
+  "primitives": {
+    "P05-20240423-175745": {
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          3
+        ]
+      },
+      "5": {
+        "after": [
+          4
+        ]
+      },
+      "6": {
+        "after": []
+      },
+      "7": {
+        "after": [
+          5,
+          6
+        ]
+      },
+      "8": {
+        "after": [
+          5
+        ]
+      },
+      "9": {
+        "after": []
+      },
+      "10": {
+        "after": [
+          7
+        ]
+      },
+      "11": {
+        "after": [
+          7,
+          3
+        ]
+      },
+      "12": {
+        "after": [
+          11
+        ]
+      },
+      "13": {
+        "after": [
+          10
+        ]
+      },
+      "14": {
+        "after": [
+          9
+        ]
+      },
+      "15": {
+        "after": [
+          11,
+          14
+        ]
+      },
+      "16": {
+        "after": [
+          15
+        ]
+      },
+      "17": {
+        "after": [
+          15
+        ]
+      },
+      "18": {
+        "after": [
+          15
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": [
+          19
+        ]
+      },
+      "21": {
+        "after": [
+          20
+        ]
+      },
+      "22": {
+        "after": [
+          3,
+          11
+        ]
+      },
+      "23": {
+        "after": [
+          22,
+          18
+        ]
+      },
+      "24": {
+        "after": [
+          3
+        ]
+      },
+      "25": {
+        "after": [
+          23
+        ]
+      },
+      "26": {
+        "after": [
+          24,
+          25
+        ]
+      },
+      "30": {
+        "after": [
+          26
+        ]
+      },
+      "31": {
+        "after": [
+          30
+        ]
+      },
+      "32": {
+        "after": [
+          3
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,457 @@
+{
+ "task": "Roast chicken plated",
+ "videos": [
+  "P08-20240614-132938"
+ ],
+ "nodes": [
+  {
+   "id": "tray_out",
+   "label": "Chicken tray out of oven",
+   "group": "Chicken",
+   "actions": {
+    "P08-20240614-132938": "1-6"
+   }
+  },
+  {
+   "id": "chicken_checked",
+   "label": "Chicken checked cooked through",
+   "group": "Chicken",
+   "actions": {
+    "P08-20240614-132938": "7-23"
+   }
+  },
+  {
+   "id": "chicken_plated",
+   "label": "Chicken thigh on plate",
+   "group": "Chicken",
+   "actions": {
+    "P08-20240614-132938": "24-34"
+   }
+  },
+  {
+   "id": "tray_cleared",
+   "label": "Foil binned, oven off, tray away",
+   "group": "Cleanup",
+   "actions": {
+    "P08-20240614-132938": "35,37-50"
+   }
+  },
+  {
+   "id": "chicken_cut",
+   "label": "Chicken cut into pieces",
+   "group": "Chicken",
+   "actions": {
+    "P08-20240614-132938": "51-58"
+   }
+  },
+  {
+   "id": "tools_cleaned",
+   "label": "Tools washed and put away",
+   "group": "Cleanup",
+   "actions": {
+    "P08-20240614-132938": "59-81"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "tray_out",
+   "to": "chicken_checked",
+   "why": "The chicken is checked on the tray out of the oven"
+  },
+  {
+   "from": "chicken_checked",
+   "to": "chicken_plated",
+   "why": "Chicken is plated once it is cooked"
+  },
+  {
+   "from": "chicken_plated",
+   "to": "tray_cleared",
+   "why": "Foil comes off the tray once the chicken is removed"
+  },
+  {
+   "from": "chicken_plated",
+   "to": "chicken_cut",
+   "why": "The chicken is cut on the plate"
+  },
+  {
+   "from": "chicken_cut",
+   "to": "tools_cleaned",
+   "why": "The knife and fork are cleaned after cutting"
+  }
+ ],
+ "primitives": {
+  "P08-20240614-132938": {
+   "1": {
+    "after": []
+   },
+   "2": {
+    "after": []
+   },
+   "3": {
+    "after": [
+     1
+    ]
+   },
+   "4": {
+    "after": [
+     3
+    ]
+   },
+   "5": {
+    "after": [
+     4
+    ]
+   },
+   "6": {
+    "after": [
+     4
+    ]
+   },
+   "7": {
+    "after": [
+     5
+    ]
+   },
+   "8": {
+    "after": [
+     7
+    ]
+   },
+   "9": {
+    "after": [
+     8
+    ]
+   },
+   "10": {
+    "after": []
+   },
+   "11": {
+    "after": [
+     10
+    ]
+   },
+   "12": {
+    "after": []
+   },
+   "13": {
+    "after": []
+   },
+   "14": {
+    "after": []
+   },
+   "15": {
+    "after": [
+     14
+    ]
+   },
+   "16": {
+    "after": [
+     15
+    ]
+   },
+   "17": {
+    "after": [
+     8,
+     12,
+     16
+    ]
+   },
+   "18": {
+    "after": [
+     17
+    ]
+   },
+   "19": {
+    "after": [
+     18
+    ]
+   },
+   "20": {
+    "after": [
+     19
+    ]
+   },
+   "21": {
+    "after": [
+     20
+    ]
+   },
+   "22": {
+    "after": [
+     21
+    ]
+   },
+   "23": {
+    "after": [
+     22
+    ]
+   },
+   "24": {
+    "after": []
+   },
+   "25": {
+    "after": []
+   },
+   "26": {
+    "after": [
+     25
+    ]
+   },
+   "27": {
+    "after": []
+   },
+   "28": {
+    "after": [
+     26
+    ]
+   },
+   "29": {
+    "after": []
+   },
+   "30": {
+    "after": [
+     22,
+     28,
+     29
+    ]
+   },
+   "31": {
+    "after": [
+     30
+    ]
+   },
+   "32": {
+    "after": [
+     31
+    ]
+   },
+   "33": {
+    "after": [
+     31
+    ]
+   },
+   "34": {
+    "after": [
+     33
+    ]
+   },
+   "35": {
+    "after": [
+     31
+    ]
+   },
+   "37": {
+    "after": [
+     35
+    ]
+   },
+   "38": {
+    "after": [
+     37
+    ]
+   },
+   "39": {
+    "after": [
+     38
+    ]
+   },
+   "40": {
+    "after": []
+   },
+   "41": {
+    "after": [
+     38,
+     40
+    ]
+   },
+   "42": {
+    "after": []
+   },
+   "43": {
+    "after": []
+   },
+   "44": {
+    "after": []
+   },
+   "45": {
+    "after": [
+     41,
+     44
+    ]
+   },
+   "46": {
+    "after": [
+     45
+    ]
+   },
+   "47": {
+    "after": [
+     46
+    ]
+   },
+   "48": {
+    "after": [
+     2
+    ]
+   },
+   "49": {
+    "after": [
+     48
+    ]
+   },
+   "50": {
+    "after": [
+     49
+    ]
+   },
+   "51": {
+    "after": [
+     31
+    ]
+   },
+   "52": {
+    "after": [
+     51
+    ]
+   },
+   "53": {
+    "after": [
+     52
+    ]
+   },
+   "54": {
+    "after": [
+     53
+    ]
+   },
+   "55": {
+    "after": [
+     54
+    ]
+   },
+   "56": {
+    "after": [
+     55
+    ]
+   },
+   "57": {
+    "after": [
+     56
+    ]
+   },
+   "58": {
+    "after": [
+     56
+    ]
+   },
+   "59": {
+    "after": [
+     31
+    ]
+   },
+   "60": {
+    "after": [
+     57
+    ]
+   },
+   "61": {
+    "after": []
+   },
+   "62": {
+    "after": [
+     59,
+     61
+    ]
+   },
+   "63": {
+    "after": [
+     62
+    ]
+   },
+   "64": {
+    "after": [
+     63
+    ]
+   },
+   "65": {
+    "after": [
+     64
+    ]
+   },
+   "66": {
+    "after": [
+     65
+    ]
+   },
+   "67": {
+    "after": []
+   },
+   "68": {
+    "after": [
+     66
+    ]
+   },
+   "69": {
+    "after": [
+     60
+    ]
+   },
+   "70": {
+    "after": [
+     69
+    ]
+   },
+   "71": {
+    "after": [
+     70
+    ]
+   },
+   "72": {
+    "after": [
+     71
+    ]
+   },
+   "73": {
+    "after": [
+     72
+    ]
+   },
+   "74": {
+    "after": [
+     72
+    ]
+   },
+   "75": {
+    "after": []
+   },
+   "76": {
+    "after": []
+   },
+   "77": {
+    "after": []
+   },
+   "78": {
+    "after": [
+     76,
+     77
+    ]
+   },
+   "79": {
+    "after": [
+     58
+    ]
+   },
+   "80": {
+    "after": [
+     79
+    ]
+   },
+   "81": {
+    "after": [
+     80
+    ]
+   }
+  }
+ }
+}

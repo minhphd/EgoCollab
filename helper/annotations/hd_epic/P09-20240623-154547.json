@@ -1,0 +1,117 @@
+{
+ "task": "Coffee and counter wipe",
+ "videos": [
+  "P09-20240623-154547"
+ ],
+ "nodes": [
+  {
+   "id": "coffee_made",
+   "label": "Coffee made in mug",
+   "group": "Coffee",
+   "actions": {
+    "P09-20240623-154547": "1-11"
+   }
+  },
+  {
+   "id": "counter_wiped",
+   "label": "Counter wiped, towel hung",
+   "group": "Cleanup",
+   "actions": {
+    "P09-20240623-154547": "12-20"
+   }
+  }
+ ],
+ "edges": [],
+ "primitives": {
+  "P09-20240623-154547": {
+   "1": {
+    "after": []
+   },
+   "2": {
+    "after": [
+     1
+    ]
+   },
+   "3": {
+    "after": [
+     2
+    ]
+   },
+   "4": {
+    "after": [
+     3
+    ]
+   },
+   "5": {
+    "after": [
+     4
+    ]
+   },
+   "6": {
+    "after": [
+     4
+    ]
+   },
+   "7": {
+    "after": [
+     6
+    ]
+   },
+   "8": {
+    "after": [
+     6
+    ]
+   },
+   "9": {
+    "after": []
+   },
+   "11": {
+    "after": [
+     9
+    ]
+   },
+   "10": {
+    "after": [
+     8
+    ]
+   },
+   "12": {
+    "after": []
+   },
+   "13": {
+    "after": []
+   },
+   "14": {
+    "after": [
+     13
+    ]
+   },
+   "15": {
+    "after": [
+     14
+    ]
+   },
+   "16": {
+    "after": []
+   },
+   "17": {
+    "after": [
+     15
+    ]
+   },
+   "18": {
+    "after": []
+   },
+   "19": {
+    "after": [
+     17
+    ]
+   },
+   "20": {
+    "after": [
+     19
+    ]
+   }
+  }
+ }
+}

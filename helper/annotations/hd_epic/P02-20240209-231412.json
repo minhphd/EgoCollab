@@ -1,0 +1,106 @@
+{
+  "task": "Glass of squash",
+  "videos": [
+    "P02-20240209-231412"
+  ],
+  "nodes": [
+    {
+      "id": "squash_in_glass",
+      "label": "Squash poured into glass",
+      "group": "Drink",
+      "actions": {
+        "P02-20240209-231412": "1-10"
+      }
+    },
+    {
+      "id": "squash_diluted",
+      "label": "Squash topped up with water",
+      "group": "Drink",
+      "actions": {
+        "P02-20240209-231412": "12-16"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "squash_in_glass",
+      "to": "squash_diluted",
+      "why": "Water is added to the poured squash"
+    }
+  ],
+  "primitives": {
+    "P02-20240209-231412": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          2
+        ]
+      },
+      "5": {
+        "after": [
+          3
+        ]
+      },
+      "6": {
+        "after": [
+          1,
+          5
+        ]
+      },
+      "7": {
+        "after": [
+          6
+        ]
+      },
+      "8": {
+        "after": []
+      },
+      "9": {
+        "after": [
+          7,
+          8
+        ]
+      },
+      "10": {
+        "after": [
+          8
+        ]
+      },
+      "12": {
+        "after": [
+          6
+        ]
+      },
+      "13": {
+        "after": [
+          12
+        ]
+      },
+      "14": {
+        "after": [
+          13
+        ]
+      },
+      "15": {
+        "after": [
+          14
+        ]
+      },
+      "16": {
+        "after": [
+          14
+        ]
+      }
+    }
+  }
+}

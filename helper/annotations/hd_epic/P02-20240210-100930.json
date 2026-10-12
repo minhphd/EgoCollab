@@ -1,0 +1,38 @@
+{
+  "task": "Soap put away",
+  "videos": [
+    "P02-20240210-100930"
+  ],
+  "nodes": [
+    {
+      "id": "soap_away",
+      "label": "Soap in cupboard",
+      "group": "Tidy",
+      "actions": {
+        "P02-20240210-100930": "1-4"
+      }
+    }
+  ],
+  "edges": [],
+  "primitives": {
+    "P02-20240210-100930": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": [
+          1,
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          3
+        ]
+      }
+    }
+  }
+}

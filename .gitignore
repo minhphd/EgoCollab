@@ -1,0 +1,11 @@
+# Data, model weights, experiment outputs and logs live next to the code but never in git
+data/
+models/
+runs/
+logs/
+# Credentials
+EgoExoCreds
+*.env
+# Python
+__pycache__/
+*.pyc

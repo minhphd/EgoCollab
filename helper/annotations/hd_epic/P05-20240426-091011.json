@@ -1,0 +1,147 @@
+{
+  "task": "Reheat porridge",
+  "videos": [
+    "P05-20240426-091011"
+  ],
+  "nodes": [
+    {
+      "id": "porridge_heated",
+      "label": "Porridge reheated and stirred",
+      "group": "Porridge",
+      "actions": {
+        "P05-20240426-091011": "2-12,20-27"
+      }
+    },
+    {
+      "id": "toppings_out",
+      "label": "Pecans and raisins on counter",
+      "group": "Toppings",
+      "actions": {
+        "P05-20240426-091011": "13-19"
+      }
+    }
+  ],
+  "edges": [],
+  "primitives": {
+    "P05-20240426-091011": {
+      "2": {
+        "after": []
+      },
+      "3": {
+        "after": [
+          2
+        ]
+      },
+      "4": {
+        "after": [
+          3
+        ]
+      },
+      "5": {
+        "after": [
+          4
+        ]
+      },
+      "6": {
+        "after": [
+          5
+        ]
+      },
+      "7": {
+        "after": []
+      },
+      "8": {
+        "after": [
+          7
+        ]
+      },
+      "9": {
+        "after": [
+          8
+        ]
+      },
+      "10": {
+        "after": []
+      },
+      "11": {
+        "after": [
+          9,
+          10
+        ]
+      },
+      "12": {
+        "after": [
+          11
+        ]
+      },
+      "13": {
+        "after": []
+      },
+      "14": {
+        "after": [
+          13
+        ]
+      },
+      "15": {
+        "after": []
+      },
+      "16": {
+        "after": [
+          15
+        ]
+      },
+      "17": {
+        "after": []
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          18
+        ]
+      },
+      "20": {
+        "after": []
+      },
+      "21": {
+        "after": [
+          12
+        ]
+      },
+      "22": {
+        "after": [
+          21
+        ]
+      },
+      "23": {
+        "after": [
+          22
+        ]
+      },
+      "24": {
+        "after": [
+          20,
+          23
+        ]
+      },
+      "25": {
+        "after": [
+          24
+        ]
+      },
+      "26": {
+        "after": [
+          25
+        ]
+      },
+      "27": {
+        "after": [
+          26
+        ]
+      }
+    }
+  }
+}

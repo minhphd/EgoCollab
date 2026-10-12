@@ -1,0 +1,105 @@
+{
+  "task": "Date mixture and chicken out",
+  "videos": [
+    "P01-20240204-124504"
+  ],
+  "nodes": [
+    {
+      "id": "mixture_mixed",
+      "label": "Date and biscuit mixture kneaded",
+      "group": "Dates",
+      "actions": {
+        "P01-20240204-124504": "1-14"
+      }
+    },
+    {
+      "id": "chicken_out",
+      "label": "Marinated chicken on counter",
+      "group": "Chicken",
+      "actions": {
+        "P01-20240204-124504": "16-19"
+      }
+    }
+  ],
+  "edges": [],
+  "primitives": {
+    "P01-20240204-124504": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": [
+          1
+        ]
+      },
+      "3": {
+        "after": [
+          1
+        ]
+      },
+      "4": {
+        "after": []
+      },
+      "5": {
+        "after": [
+          4
+        ]
+      },
+      "6": {
+        "after": [
+          5
+        ]
+      },
+      "7": {
+        "after": []
+      },
+      "8": {
+        "after": [
+          7
+        ]
+      },
+      "9": {
+        "after": []
+      },
+      "10": {
+        "after": [
+          9
+        ]
+      },
+      "11": {
+        "after": [
+          9
+        ]
+      },
+      "12": {
+        "after": [
+          5
+        ]
+      },
+      "13": {
+        "after": []
+      },
+      "14": {
+        "after": []
+      },
+      "16": {
+        "after": []
+      },
+      "17": {
+        "after": [
+          16
+        ]
+      },
+      "18": {
+        "after": [
+          17
+        ]
+      },
+      "19": {
+        "after": [
+          17
+        ]
+      }
+    }
+  }
+}

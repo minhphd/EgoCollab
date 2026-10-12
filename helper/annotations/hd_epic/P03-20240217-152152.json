@@ -1,0 +1,342 @@
+{
+  "task": "Laundry load",
+  "videos": [
+    "P03-20240217-152152"
+  ],
+  "nodes": [
+    {
+      "id": "clothes_loaded",
+      "label": "Clothes in washing machine",
+      "group": "Laundry",
+      "actions": {
+        "P03-20240217-152152": "1-20"
+      }
+    },
+    {
+      "id": "detergent_added",
+      "label": "Detergent on clothes, door closed",
+      "group": "Laundry",
+      "actions": {
+        "P03-20240217-152152": "21-38"
+      }
+    },
+    {
+      "id": "conditioner_added",
+      "label": "Conditioner in machine tray",
+      "group": "Laundry",
+      "actions": {
+        "P03-20240217-152152": "39-49"
+      }
+    },
+    {
+      "id": "wash_started",
+      "label": "Wash program running",
+      "group": "Laundry",
+      "actions": {
+        "P03-20240217-152152": "50-57,59-60"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "clothes_loaded",
+      "to": "detergent_added",
+      "why": "The detergent cap is placed on top of the loaded clothes"
+    },
+    {
+      "from": "detergent_added",
+      "to": "wash_started",
+      "why": "The door is closed with detergent inside before starting"
+    },
+    {
+      "from": "conditioner_added",
+      "to": "wash_started",
+      "why": "Conditioner is in the tray before the wash starts"
+    }
+  ],
+  "primitives": {
+    "P03-20240217-152152": {
+      "1": {
+        "after": []
+      },
+      "2": {
+        "after": [
+          1
+        ]
+      },
+      "3": {
+        "after": []
+      },
+      "4": {
+        "after": []
+      },
+      "5": {
+        "after": [
+          3,
+          4
+        ]
+      },
+      "6": {
+        "after": []
+      },
+      "7": {
+        "after": [
+          4,
+          6
+        ]
+      },
+      "8": {
+        "after": []
+      },
+      "9": {
+        "after": [
+          4,
+          8
+        ]
+      },
+      "10": {
+        "after": []
+      },
+      "11": {
+        "after": [
+          4,
+          10
+        ]
+      },
+      "12": {
+        "after": []
+      },
+      "13": {
+        "after": [
+          4,
+          12
+        ]
+      },
+      "14": {
+        "after": []
+      },
+      "15": {
+        "after": [
+          4,
+          14
+        ]
+      },
+      "16": {
+        "after": []
+      },
+      "17": {
+        "after": [
+          4,
+          16
+        ]
+      },
+      "18": {
+        "after": []
+      },
+      "19": {
+        "after": [
+          4,
+          18
+        ]
+      },
+      "20": {
+        "after": [
+          18
+        ]
+      },
+      "21": {
+        "after": []
+      },
+      "22": {
+        "after": [
+          21
+        ]
+      },
+      "23": {
+        "after": [
+          22
+        ]
+      },
+      "24": {
+        "after": [
+          22
+        ]
+      },
+      "25": {
+        "after": [
+          24
+        ]
+      },
+      "26": {
+        "after": [
+          22
+        ]
+      },
+      "27": {
+        "after": [
+          25
+        ]
+      },
+      "28": {
+        "after": [
+          27
+        ]
+      },
+      "29": {
+        "after": [
+          26,
+          28
+        ]
+      },
+      "30": {
+        "after": [
+          29
+        ]
+      },
+      "31": {
+        "after": [
+          26
+        ]
+      },
+      "32": {
+        "after": [
+          31
+        ]
+      },
+      "33": {
+        "after": [
+          32
+        ]
+      },
+      "34": {
+        "after": [
+          30
+        ]
+      },
+      "35": {
+        "after": [
+          34,
+          19
+        ]
+      },
+      "36": {
+        "after": [
+          35
+        ]
+      },
+      "37": {
+        "after": [
+          36
+        ]
+      },
+      "38": {
+        "after": [
+          37
+        ]
+      },
+      "39": {
+        "after": []
+      },
+      "40": {
+        "after": [
+          39
+        ]
+      },
+      "41": {
+        "after": []
+      },
+      "42": {
+        "after": [
+          40
+        ]
+      },
+      "43": {
+        "after": [
+          42
+        ]
+      },
+      "44": {
+        "after": [
+          41,
+          43
+        ]
+      },
+      "45": {
+        "after": [
+          44
+        ]
+      },
+      "46": {
+        "after": [
+          43
+        ]
+      },
+      "47": {
+        "after": [
+          46
+        ]
+      },
+      "48": {
+        "after": [
+          47
+        ]
+      },
+      "49": {
+        "after": [
+          45
+        ]
+      },
+      "50": {
+        "after": []
+      },
+      "51": {
+        "after": [
+          50
+        ]
+      },
+      "52": {
+        "after": [
+          50
+        ]
+      },
+      "53": {
+        "after": [
+          52
+        ]
+      },
+      "54": {
+        "after": [
+          52
+        ]
+      },
+      "55": {
+        "after": [
+          54
+        ]
+      },
+      "56": {
+        "after": [
+          54
+        ]
+      },
+      "57": {
+        "after": [
+          56
+        ]
+      },
+      "59": {
+        "after": [
+          56
+        ]
+      },
+      "60": {
+        "after": [
+          59,
+          57,
+          38,
+          49
+        ]
+      }
+    }
+  }
+}

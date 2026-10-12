@@ -1,0 +1,382 @@
+{
+ "task": "Coffee with frothed milk",
+ "videos": [
+  "P01-20240203-093333"
+ ],
+ "nodes": [
+  {
+   "id": "coffee_brewed",
+   "label": "Coffee brewed into mug",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240203-093333": "3-23,40,46"
+   }
+  },
+  {
+   "id": "milk_frothing",
+   "label": "Milk frothing in frother",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240203-093333": "24-25,30,34-39,41-43"
+   }
+  },
+  {
+   "id": "yeast_binned",
+   "label": "Expired yeast binned",
+   "group": "Cleanup",
+   "actions": {
+    "P01-20240203-093333": "26-29,31-33"
+   }
+  },
+  {
+   "id": "coffee_stirred",
+   "label": "Frothed milk stirred into coffee",
+   "group": "Coffee",
+   "actions": {
+    "P01-20240203-093333": "44-45,47-49,63-68"
+   }
+  },
+  {
+   "id": "frother_washed",
+   "label": "Milk frother washed, on base",
+   "group": "Cleanup",
+   "actions": {
+    "P01-20240203-093333": "50-62"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "coffee_brewed",
+   "to": "coffee_stirred",
+   "why": "Milk is poured into the brewed coffee"
+  },
+  {
+   "from": "milk_frothing",
+   "to": "coffee_stirred",
+   "why": "Frothed milk is poured into the mug"
+  },
+  {
+   "from": "coffee_stirred",
+   "to": "frother_washed",
+   "why": "The frother is washed once emptied"
+  }
+ ],
+ "primitives": {
+  "P01-20240203-093333": {
+   "3": {
+    "after": []
+   },
+   "4": {
+    "after": [
+     3
+    ]
+   },
+   "5": {
+    "after": [
+     3
+    ]
+   },
+   "6": {
+    "after": [
+     4
+    ]
+   },
+   "7": {
+    "after": []
+   },
+   "8": {
+    "after": [
+     6,
+     7
+    ]
+   },
+   "9": {
+    "after": []
+   },
+   "10": {
+    "after": []
+   },
+   "11": {
+    "after": [
+     10
+    ]
+   },
+   "12": {
+    "after": []
+   },
+   "13": {
+    "after": [
+     11,
+     12
+    ]
+   },
+   "14": {
+    "after": [
+     13
+    ]
+   },
+   "15": {
+    "after": [
+     13
+    ]
+   },
+   "16": {
+    "after": [
+     15
+    ]
+   },
+   "17": {
+    "after": []
+   },
+   "18": {
+    "after": [
+     17
+    ]
+   },
+   "19": {
+    "after": [
+     18
+    ]
+   },
+   "20": {
+    "after": [
+     19
+    ]
+   },
+   "21": {
+    "after": []
+   },
+   "22": {
+    "after": [
+     20,
+     21
+    ]
+   },
+   "23": {
+    "after": [
+     22
+    ]
+   },
+   "24": {
+    "after": []
+   },
+   "25": {
+    "after": [
+     24
+    ]
+   },
+   "26": {
+    "after": []
+   },
+   "27": {
+    "after": [
+     26
+    ]
+   },
+   "28": {
+    "after": [
+     27
+    ]
+   },
+   "29": {
+    "after": [
+     28
+    ]
+   },
+   "30": {
+    "after": [
+     25
+    ]
+   },
+   "31": {
+    "after": []
+   },
+   "32": {
+    "after": [
+     29,
+     31
+    ]
+   },
+   "33": {
+    "after": [
+     32
+    ]
+   },
+   "34": {
+    "after": []
+   },
+   "35": {
+    "after": [
+     34
+    ]
+   },
+   "36": {
+    "after": [
+     25
+    ]
+   },
+   "37": {
+    "after": [
+     36,
+     34
+    ]
+   },
+   "38": {
+    "after": [
+     37
+    ]
+   },
+   "39": {
+    "after": [
+     37
+    ]
+   },
+   "40": {
+    "after": [
+     8,
+     9,
+     16,
+     23
+    ]
+   },
+   "41": {
+    "after": []
+   },
+   "42": {
+    "after": [
+     38,
+     41
+    ]
+   },
+   "43": {
+    "after": [
+     42
+    ]
+   },
+   "44": {
+    "after": []
+   },
+   "45": {
+    "after": [
+     44
+    ]
+   },
+   "46": {
+    "after": [
+     40
+    ]
+   },
+   "47": {
+    "after": [
+     46
+    ]
+   },
+   "48": {
+    "after": [
+     39
+    ]
+   },
+   "49": {
+    "after": [
+     47,
+     48
+    ]
+   },
+   "50": {
+    "after": [
+     49
+    ]
+   },
+   "51": {
+    "after": []
+   },
+   "52": {
+    "after": [
+     50,
+     51
+    ]
+   },
+   "53": {
+    "after": [
+     52
+    ]
+   },
+   "54": {
+    "after": [
+     53
+    ]
+   },
+   "55": {
+    "after": []
+   },
+   "56": {
+    "after": [
+     53,
+     55
+    ]
+   },
+   "57": {
+    "after": [
+     56
+    ]
+   },
+   "58": {
+    "after": [
+     56
+    ]
+   },
+   "59": {
+    "after": [
+     51
+    ]
+   },
+   "60": {
+    "after": [
+     54
+    ]
+   },
+   "61": {
+    "after": [
+     60,
+     58
+    ]
+   },
+   "62": {
+    "after": [
+     61
+    ]
+   },
+   "63": {
+    "after": [
+     49
+    ]
+   },
+   "64": {
+    "after": [
+     63,
+     45
+    ]
+   },
+   "65": {
+    "after": [
+     64
+    ]
+   },
+   "66": {
+    "after": []
+   },
+   "67": {
+    "after": [
+     65,
+     66
+    ]
+   },
+   "68": {
+    "after": [
+     67
+    ]
+   }
+  }
+ }
+}
