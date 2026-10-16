@@ -24,8 +24,7 @@ def list_episodes(root: Path) -> list[dict]:
         m = json.loads(meta.read_text())
         out.append({"path": f"{m['dataset']}/{m['id']}", "dataset": m["dataset"], "id": m["id"], "title": m["title"],
                     "video_id": m.get("video_id") or m["id"], "task": m.get("task", ""),
-                    "start": (m.get("clip") or [0])[0],
-                    "preds": sorted(p.stem[len("pred_"):] for p in meta.parent.glob("pred_*.json"))})
+                    "start": (m.get("clip") or [0])[0]})
     return sorted(out, key=lambda e: (e["dataset"], e["video_id"], e["start"]))
 
 

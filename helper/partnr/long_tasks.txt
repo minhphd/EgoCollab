@@ -1,0 +1,2 @@
+# the 26 PARTNR val tasks with 5+ placements, each object placed once (split=val); next-to tasks first
+522 563 151 45 769 239 6 10 72 79 83 90 93 99 105 111 121 197 200 217 278 416 423 653 655 779 

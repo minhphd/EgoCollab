@@ -13,39 +13,10 @@ orderings between them.
 - Annotations: https://github.com/hd-epic/hd-epic-annotations. Videos and the per-frame gaze and pose
   ("Intermediate Data") come from the OneDrive folders linked on the site; `data.py` holds the URLs.
 
-## What is on disk
+## The data
 
-Everything lives in `data/hd_epic/` at the repo root (not in git).
-
-| Path | Contents | Size |
-| --- | --- | --- |
-| `videos/<P0x>/<video>.mp4` | 156 RGB videos from the Aria camera, H.264, 1408 x 1408 fisheye, 30 fps | 116 GB |
-| `framewise/<P0x>/<video>/framewise_info.jsonl` | one line per video frame: `T_world_device` (3 x 4 pose), `gaze_centre_in_pixels`, `gaze_direction_in_world`, timestamps | 2.2 GB |
-| `framewise/<P0x>/<video>/device_calibration.json` | camera and sensor calibration of that recording (`camera-rgb`: fisheye model, `T_device_camera`) | |
-| `annotations/` | the HD-EPIC annotations repo (below) | |
-| `actions/<video>.txt` | numbered narrations per video, written by `export-actions` for graph annotation | |
-
-154 of the 156 videos have gaze and pose; P02-20240210-113925 and P02-20240211-182630 have none released.
-
-Derived data, also in `data/`: `frames448/` (every video at 2 fps, 448 px JPEG, 22 GB, from
-`helper.perception.frames`) and `episodes/hd_epic/`, `episodes/hd_epic_task/` (viewer episodes, below).
-
-## HD-EPIC's annotations (`data/hd_epic/annotations/`)
-
-| Folder | File | What it holds |
-| --- | --- | --- |
-| `narrations-and-action-segments/` | `HD_EPIC_Narrations.pkl` | 59,454 actions: `narration` (free text), `start_timestamp`, `end_timestamp`, `verbs`, `nouns`, `pairs`, `main_actions`, their class ids, `hands`. `unique_narration_id` = `<video>-<index>`. |
-| | `HD_EPIC_verb_classes.csv`, `HD_EPIC_noun_classes.csv` | verb and noun clusters with their instances |
-| `high-level/` | `complete_recipes.json` | 69 recipes: `name`, `type`, `steps`, `captures` (which videos, step and prep times) |
-| | `activities/P0x_recipe_timestamps.csv` | high-level activity segments: `video_id`, `recipe_id`, `high_level_activity_label`, `start_time`, `end_time` |
-| `scene-and-object-movements/` | `assoc_info.json` | every moved object (about 54 per video): `name` and `tracks`, each a pick-up to put-down `time_segment` with mask ids |
-| | `mask_info.json` | per mask: `frame_number`, `3d_location` (world), `bbox` (on the 1408 px frame), `fixture` |
-| `eye-gaze-priming/` | `priming_info.json` | per object movement: when gaze first reached the pick-up or put-down location (`frame_primed`, `prime_gap` in s) |
-| `audio-annotations/` | `HD_EPIC_Sounds.csv`, `.pkl` | sound events |
-| `vqa-benchmark/` | 30 JSON files | the HD-EPIC VQA questions |
-| `youtube-links/` | `HD_EPIC_YouTube_URLs.csv` | video links |
-
-The annotations repo's own `README.md` documents every field.
+Everything lives in `data/hd_epic/` at the repo root (not in git). [data/hd_epic/README.md](../../../data/hd_epic/README.md)
+describes what is on disk and every annotation file HD-EPIC provides.
 
 ## Post-hoc task graphs (`annotations/` in this folder, in git)
 
@@ -76,9 +47,9 @@ with the annotation rules:
 
 | File | What it does |
 | --- | --- |
-| `data.py` | `download`, `build` (per-subgoal viewer episodes), `export-actions`, `check`; loaders `load_narrations()`, `action_times(narr, video)`, `load_framewise(video)` (normalized gaze per frame, head position) |
-| `posthoc_graph.py` | the task-graph format: `find(video)`, `action_owner(graph)`, `parse_ranges`, `primitive_edges`, `validate`, `subgoal_episodes` |
-| `tasks.py` | ground truth per video: `load(min_nodes)` gives a `Task` with subgoals, labels, required orderings, each subgoal's first and last action time, and `done(t)`, `current(t)`, `next(t)`; `export` writes one viewer episode per video |
+| `data.py` | `download`, `build` (one viewer episode per video with every HD-EPIC label), `export-actions`, `check`; per-layer readers `activities`, `movements` (with gaze priming and boxes), `sounds`, `ingredients`, `recipe_steps`; loaders `load_narrations()`, `action_times(narr, video)`, `load_framewise(video)` (normalized gaze per frame, head position) |
+| `posthoc_graph.py` | the task-graph format: `find(video)`, `action_owner(graph)`, `parse_ranges`, `primitive_edges`, `validate` |
+| `tasks.py` | ground truth per video: `load(min_nodes)` gives a `Task` with subgoals, labels, required orderings, each subgoal's first and last action time, and `done(t)`, `current(t)`, `next(t)` |
 | `gaze3d.py` | gaze fixations on objects in 3D: the Aria gaze ray against where each moved object rests (from the object-movement annotations), no detector needed |
 
 ## How to use
@@ -87,8 +58,7 @@ with the annotation rules:
 python -m helper.datasets.hd_epic download --all --workers 4   # videos, gaze, annotations (on a transfer node:
                                                                 # helper/slurm/download_hd_epic.sbatch)
 python -m helper.datasets.hd_epic check                        # validate the post-hoc graphs
-python -m helper.datasets.hd_epic build                        # viewer episodes, one per subgoal
-python -m helper.datasets.hd_epic.tasks export                 # viewer episodes, one per video
+python -m helper.datasets.hd_epic build                        # viewer episodes, one per video
 python -m helper.perception.frames --shard 0/1                 # 2 fps frame cache, data/frames448
 ```
 
@@ -111,11 +81,13 @@ split and the other 108 as the test split.
 
 ## Viewer episodes
 
-- `data/episodes/hd_epic/` (1,225): one per subgoal per video. The clip runs from the subgoal's first
-  action to its last with 1 s of context; nodes are that subgoal's actions (median 32) with their edges.
-  Subgoals with fewer than 3 actions are skipped.
-- `data/episodes/hd_epic_task/` (156): one per video; nodes are the subgoals with their required
-  orderings, segments span each subgoal's first to last action, actions are the narrations.
+`data/episodes/hd_epic/` holds one episode per video with every HD-EPIC label: the narrations (with
+verbs, nouns, main action and hands), the steps of every recipe captured in the video with their step and
+prep times, and tracks for high-level activities, object movements, gaze priming, sounds and ingredient
+weighing and adding, plus the boxes of each moved object at its pick-up and put-down and the recipe,
+ingredient and nutrition facts. HD-EPIC gives no dependencies between steps, so the episodes have no edges.
+Of the 40 videos without a recipe, 32 have activities, and every video has object movements and sounds. The post-hoc subgoal graphs are not shown; the
+episodes once built from them are kept in `data/episodes_annotated/` (`hd_epic_subgoals/`, `hd_epic_task/`).
 
 ## Things to know
 

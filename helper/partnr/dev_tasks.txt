@@ -1,0 +1,21 @@
+# 20-task dev set from val_mini: 12 with required orderings, 8 without; the person alone completes each
+3
+128
+200
+34
+135
+276
+37
+136
+280
+142
+152
+157
+0
+43
+86
+4
+44
+87
+6
+46

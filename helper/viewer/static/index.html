@@ -17,6 +17,7 @@
     <span class="hint" id="episode-pos"></span>
     <label><input type="checkbox" id="show-gaze" checked> Gaze</label>
     <label><input type="checkbox" id="show-trail" checked> Trail</label>
+    <label><input type="checkbox" id="show-boxes" checked> Boxes</label>
     <span class="hint">Space play/pause · ←/→ 5 s · , / . one frame · n / p episode</span>
   </header>
   <main>
@@ -25,49 +26,41 @@
         <video id="video" preload="auto" controls muted></video>
         <canvas id="overlay"></canvas>
       </div>
+      <div class="views" id="views"></div>
       <div class="timeline-wrap">
-        <div class="timeline-label">Graph nodes</div>
+        <div class="timeline-label">Steps</div>
         <canvas id="timeline" height="28"></canvas>
         <div id="actions-row">
           <div class="timeline-label">Actions</div>
           <canvas id="actions" height="14"></canvas>
         </div>
+        <div id="tracks"></div>
       </div>
     </section>
     <section class="right">
       <div class="card" id="subgoal">
-        <div class="eyebrow" id="sg-kind">Current subgoal</div>
+        <div class="eyebrow" id="sg-kind">Current step</div>
         <div class="sg-title" id="sg-title">-</div>
         <div class="sg-group" id="sg-group"></div>
         <div class="sg-row"><span class="k">Current</span><span id="sg-current">-</span></div>
-        <div class="sg-row"><span class="k">Next ready</span><span id="sg-next">-</span></div>
-        <div class="sg-row"><span class="k">Action</span><span id="sg-action" class="muted">-</span></div>
+        <div class="sg-row"><span class="k">Action</span><span><span id="sg-action">-</span><span class="detail" id="sg-action-detail"></span></span></div>
         <div class="sg-row"><span class="k">Progress</span><span id="sg-progress">-</span></div>
+        <div id="now"></div>
       </div>
       <div class="card graph-card">
         <div class="graph-head">
           <span class="eyebrow" id="graph-title">Task graph</span>
           <span class="legend">
             <i class="sw done"></i>done <i class="sw active"></i>active <i class="sw prep"></i>preparing
-            <i class="sw ready"></i>ready <i class="sw blocked"></i>blocked
+            <i class="sw todo"></i>not started
           </span>
         </div>
         <div class="graph-source" id="graph-source"></div>
         <div id="graph"></div>
       </div>
-    </section>
-    <section class="pred-col" id="pred-col" hidden>
-      <div class="card graph-card" id="pred-card">
-        <div class="graph-head">
-          <span class="eyebrow">Inferred graph</span>
-          <select id="pred-model" aria-label="Model"></select>
-          <span class="legend"><i class="sw ehit"></i>edge in truth <i class="sw eextra"></i>edge not in truth
-            <i class="sw emiss"></i>true edge missed · <i class="sw ready"></i>predicted next</span>
-        </div>
-        <div class="graph-source" id="pred-meta"></div>
-        <canvas id="pred-curve" height="46"></canvas>
-        <div class="graph-source">Blue: edge F1 · green: progress accuracy · orange line: now</div>
-        <div id="pred-graph"></div>
+      <div class="card" id="info-card" hidden>
+        <div class="eyebrow">About this recording</div>
+        <div id="info"></div>
       </div>
     </section>
   </main>

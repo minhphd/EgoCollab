@@ -1,8 +1,8 @@
 """IndustReal (tabletop toy-car assembly and maintenance, HoloLens 2) as viewer episodes.
 
-One episode per recording. Nodes are the procedure steps of PSR_labels.csv; a step's segment runs
-from the previous step completion to its own. Actions are the AR_labels.csv segments. Edges are the
-step precedence shared by the training recordings of the same procedure. The video is encoded once
+One episode per recording, from IndustReal's own labels: nodes are the procedure steps of PSR_labels.csv
+(a step's segment runs from the previous step completion to its own) and actions are the AR_labels.csv
+segments. IndustReal gives no dependencies between steps, so episodes have no edges. The video is encoded once
 from the 10 fps RGB frames into <data>/videos/<recording>.mp4; times count from the first frame.
 
     python -m helper.datasets.industreal build [--shard 0/8]
@@ -14,7 +14,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from ..episode import Action, Episode, Node, Segment, precedence_dag, probe_video, write_episode
+from ..episode import Action, Episode, Node, Segment, probe_video, write_episode
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "industreal"
@@ -54,7 +54,7 @@ def encode(rec: str) -> Path:
     return out
 
 
-def build_one(rec: str, kind_nodes: dict, labels: dict, edges: dict) -> Path:
+def build_one(rec: str, kind_nodes: dict, labels: dict) -> Path:
     numbers = frame_numbers(rec)
     first, index = numbers[0], {n: i for i, n in enumerate(numbers)}
     t = lambda name: index.get(int(name.split(".")[0]), int(name.split(".")[0]) - first) / FPS
@@ -74,7 +74,7 @@ def build_one(rec: str, kind_nodes: dict, labels: dict, edges: dict) -> Path:
         inside = g and g != (0.0, 0.0) and 0 <= g[0] <= w and 0 <= g[1] <= h
         gaze.append([round(g[0] / w, 4), round(g[1] / h, 4)] if inside else None)
     ep = Episode("industreal", rec, TASK[kind], [Node(n, labels[n], TASK[kind]) for n in kind_nodes[kind]],
-                 edges[kind], segments, actions, graph_source="Step precedence shared by the training recordings",
+                 [], segments, actions, graph_source="IndustReal procedure steps (no dependencies are provided)",
                  video_id=rec, task=TASK[kind], node_kind="subgoal")
     return write_episode(EPISODES, ep, video, gaze)
 
@@ -85,11 +85,9 @@ def build(shard: str) -> None:
     steps = {r: [(x[1], x[2]) for x in rows(DATA / r / "PSR_labels.csv")] for r in recs}
     labels = {s: d for st in steps.values() for s, d in st}
     kind_nodes = {k: sorted({s for r in recs if kind(r) == k for s, _ in steps[r]}, key=int) for k in TASK}
-    orders = {k: [[s for s, _ in steps[r]] for r in recs if kind(r) == k and recs[r] == "train"] for k in TASK}
-    edges = {k: precedence_dag(orders[k], kind_nodes[k], min_support=2) for k in TASK}
     i, n = map(int, shard.split("/"))
     for rec in sorted(recs)[i::n]:
-        print("built", build_one(rec, kind_nodes, labels, edges), flush=True)
+        print("built", build_one(rec, kind_nodes, labels), flush=True)
 
 
 def main() -> None:

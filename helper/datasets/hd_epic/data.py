@@ -7,27 +7,30 @@
 """
 
 import argparse
+import glob
 import json
 import shutil
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from functools import cache
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from . import posthoc_graph
-from ..episode import Action, Episode, Node, Segment, probe_video, write_episode
+from ..episode import Action, Box, Episode, Node, Segment, Track, probe_video, write_episode
 from ..sharepoint import SharedFolder
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "hd_epic"
 EPISODES = REPO / "data" / "episodes"
+ANN = DATA / "annotations"
+FPS, FRAME_PX = 30, 1408  # every HD-EPIC video; frame numbers and boxes refer to these
 ANNOTATIONS_GIT = "https://github.com/hd-epic/hd-epic-annotations"
 # OneDrive mirrors listed on https://hd-epic.github.io/site (faster than data.bris.ac.uk).
 VIDEOS_URL = "https://uob-my.sharepoint.com/:f:/g/personal/wq23021_bristol_ac_uk/IgA0PLwURLmfQZOl_J256iZtAY_uzFr0gTXVMWCWY4MSGd0"
 INTERMEDIATE_URL = "https://uob-my.sharepoint.com/:f:/g/personal/jc17360_bristol_ac_uk/IgCCGb5qDbiOR7cmj1R9OyUWAXQFYL7FP_d0eMzB4ENPVQk"
-MIN_ACTIONS = 3  # smaller subgoals give trivial graphs
 DEFAULT_VIDEOS = [
     "P01-20240202-110250",  # coffee, 5 steps
     "P03-20240217-131219",  # red lentil squash curry, 11 steps
@@ -81,31 +84,21 @@ def load_framewise(vid: str) -> tuple[list, np.ndarray]:
     return points, np.array(xy, dtype=float)
 
 
-def head_displacement(q: np.ndarray) -> tuple[float | None, float]:
-    """Largest horizontal distance (m) of the head from its median position, and pose coverage."""
-    ok = ~np.isnan(q[:, 0])
-    if not ok.any():
-        return None, 0.0
-    q = q[ok]
-    return float(np.linalg.norm(q - np.median(q, axis=0), axis=1).max()), float(ok.mean())
-
-
-def recipe_graph(vid: str, recipes: dict) -> tuple[list, list, list, list]:
-    """Nodes, edges, segments and already-done nodes for every recipe capture that touches `vid`."""
-    nodes, edges, segments, done_before = [], [], [], []
-    for rid, r in recipes.items():
+def recipe_steps(vid: str, recipes: dict) -> tuple[list, list, list]:
+    """Steps, their step and prep segments in `vid`, and steps already done in earlier videos, for every
+    recipe capture that touches `vid` (high-level/complete_recipes.json)."""
+    nodes, segments, done_before = [], [], []
+    for r in recipes.values():
         for cap in r["captures"]:
             if vid not in cap["videos"]:
                 continue
             earlier = set(cap["videos"][: cap["videos"].index(vid)])
-            steps = list(r["steps"])
-            nodes += [Node(s, r["steps"][s], r["name"]) for s in steps]
-            edges += list(zip(steps, steps[1:]))
+            nodes += [Node(s, label, r["name"]) for s, label in r["steps"].items()]
             for kind, table in (("step", cap["step_times"]), ("prep", cap["prep_times"])):
                 for s, times in table.items():
                     segments += [Segment(s, t["start"], t["end"], kind) for t in times if t["video"] == vid]
             done_before += [s for s, t in cap["step_times"].items() if t and all(x["video"] in earlier for x in t)]
-    return nodes, edges, segments, done_before
+    return nodes, segments, done_before
 
 
 def load_narrations() -> pd.DataFrame:
@@ -129,46 +122,123 @@ def local_videos() -> list[str]:
     return sorted(p.stem for p in (DATA / "videos").glob("P*/*.mp4"))
 
 
-def build(video_ids: list[str] | None = None) -> None:
-    """One episode per subgoal per video where a post-hoc graph exists, else one recipe episode per video.
+@cache
+def _json(rel: str) -> dict:
+    return json.loads((ANN / rel).read_text())
 
-    Subgoals with fewer than MIN_ACTIONS actions are skipped.
-    """
-    recipes = json.loads((DATA / "annotations" / "high-level" / "complete_recipes.json").read_text())
+
+@cache
+def _csv(pattern: str) -> pd.DataFrame:
+    return pd.concat([pd.read_csv(f) for f in sorted(glob.glob(str(ANN / pattern)))])
+
+
+def _seconds(hms: str) -> float:
+    h, m, s = str(hms).split(":")
+    return int(h) * 3600 + int(m) * 60 + float(s)
+
+
+def _clock(t: float) -> str:
+    return f"{int(t) // 60}:{t % 60:04.1f}"
+
+
+def activities(vid: str, duration: float) -> Track:
+    """High-level activity segments; an end time of "end" means the end of the video."""
+    rows = _csv("high-level/activities/*_recipe_timestamps.csv")
+    end = lambda x: duration if str(x).strip() == "end" else float(x)
+    items = [{"start": float(r.start_time), "end": end(r.end_time), "label": r.high_level_activity_label,
+              "detail": {"recipe": r.recipe_id} if isinstance(r.recipe_id, str) else {}}
+             for r in rows[rows.video_id == vid].itertuples()]
+    return Track("Activities", items, "high-level/activities/*_recipe_timestamps.csv")
+
+
+def movements(vid: str) -> tuple[Track, Track, list[Box]]:
+    """Object movements (pick-up to put-down) with their boxes, and the gaze priming before each."""
+    assoc = _json("scene-and-object-movements/assoc_info.json").get(vid, {})
+    masks = _json("scene-and-object-movements/mask_info.json").get(vid, {})
+    items, boxes, name_at = [], [], {}
+    for obj in assoc.values():
+        name = obj["name"].strip()
+        for tr in obj["tracks"]:
+            ms = sorted((masks[m] for m in tr["masks"] if m in masks), key=lambda m: m["frame_number"])
+            where = lambda m: m.get("fixture") if m.get("fixture") not in (None, "Null") else "no fixture"
+            a, b = tr["time_segment"]
+            items.append({"start": a, "end": b, "label": name,
+                          "detail": {"from": where(ms[0]), "to": where(ms[-1])} if ms else {}})
+            for m in ms:
+                name_at[m["frame_number"]] = name
+                boxes.append(Box(round(m["frame_number"] / FPS, 3), [round(c / FRAME_PX, 4) for c in m["bbox"]], name))
+    primed = []
+    for x in _json("eye-gaze-priming/priming_info.json").get(vid, {}).values():
+        for key, word in (("start", "pick-up"), ("end", "put-down")):
+            y = x.get(key)
+            stats = y.get("prime_stats", {}) if isinstance(y, dict) else {}
+            if stats.get("frame_primed", -1) > 0:
+                t = stats["frame_primed"] / FPS
+                primed.append({"start": t, "end": t, "label": f"gaze on the {word} spot of {name_at.get(y['frame'], 'an object')}",
+                               "detail": {"ahead by": f"{stats.get('prime_gap', 0):.1f} s", "hand at": _clock(y["frame"] / FPS)}})
+    return (Track("Object movements", sorted(items, key=lambda i: i["start"]), "scene-and-object-movements/assoc_info.json"),
+            Track("Gaze priming", sorted(primed, key=lambda i: i["start"]), "eye-gaze-priming/priming_info.json"), boxes)
+
+
+def sounds(vid: str) -> Track:
+    rows = _csv("audio-annotations/HD_EPIC_Sounds.csv")
+    items = [{"start": _seconds(a), "end": _seconds(b), "label": c}
+             for a, b, c in rows.loc[rows.video_id == vid, ["start_timestamp", "stop_timestamp", "class"]].values]
+    return Track("Sounds", items, "audio-annotations/HD_EPIC_Sounds.csv")
+
+
+def ingredients(vid: str, recipes: dict) -> tuple[Track, dict]:
+    """Weighing and adding of each ingredient in this video, and the recipe facts for the info panel."""
+    items, info = [], {}
+    for rid, r in recipes.items():
+        for cap in r["captures"]:
+            if vid not in cap["videos"]:
+                continue
+            info[f"Recipe {rid}: {r['name']}"] = [f"type: {r['type']}", f"source: {r['source'] or 'none'}",
+                                                  f"videos: {', '.join(cap['videos'])}"]
+            lines = []
+            for ing in cap["ingredients"].values():
+                facts = [f"{k} {ing[k]}" for k in ("calories", "carbs", "fat", "protein") if ing.get(k) not in (None, "N/A")]
+                amount = f"{ing['amount']} {ing['amount_unit']}" if ing.get("amount") not in (None, "N/A") else ""
+                lines.append(" · ".join(x for x in [ing["name"], amount, ", ".join(facts)] if x))
+                for kind in ("weigh", "add"):
+                    items += [{"start": e["start"], "end": e["end"], "label": f"{kind} {ing['name']}"}
+                              for e in ing.get(kind, []) if e.get("video") == vid]
+            info[f"Ingredients of {r['name']}"] = lines
+    return Track("Ingredients", sorted(items, key=lambda i: i["start"]), "high-level/complete_recipes.json"), info
+
+
+def narration_detail(r) -> dict:
+    out = {"verbs": ", ".join(r.verbs), "nouns": ", ".join(r.nouns),
+           "main action": "; ".join(" ".join(p) for p in r.main_actions), "hands": ", ".join(r.hands)}
+    return {k: v for k, v in out.items() if v}
+
+
+def build(video_ids: list[str] | None = None) -> None:
+    """One viewer episode per video with every HD-EPIC label: the narrated actions (with verbs, nouns and
+    hands), the steps of every recipe captured in the video with their step and prep times, high-level
+    activities, object movements with their boxes, gaze priming, sounds, and ingredient weighing and adding.
+    HD-EPIC gives no dependencies between steps, so episodes have no edges; the post-hoc graphs in
+    annotations/ are not used here."""
+    recipes = _json("high-level/complete_recipes.json")
     narr = load_narrations()
     for vid in video_ids or local_videos():
         rows = narr[narr.video_id == vid]
-        actions = [Action(r.start_timestamp, r.end_timestamp, r.narration) for r in rows.itertuples()]
-        video, (gaze, xy) = DATA / "videos" / vid[:3] / f"{vid}.mp4", load_framewise(vid)
+        actions = [Action(r.start_timestamp, r.end_timestamp, r.narration.strip(), narration_detail(r)) for r in rows.itertuples()]
         for old in EPISODES.glob(f"hd_epic/{vid}*"):
             shutil.rmtree(old)
-        g = posthoc_graph.find(vid)
-        if not g:
-            nodes, edges, segments, done_before = recipe_graph(vid, recipes)
-            title = " + ".join(dict.fromkeys(n.group for n in nodes)) or "no recipe"
-            ep = Episode("hd_epic", vid, title, nodes, edges, segments, actions, done_before,
-                         "Recipe steps in the participant's written order", video_id=vid, task=title)
-            print("built", write_episode(EPISODES, ep, video, gaze))
-            continue
-        labels = {r.index: "; ".join(" ".join(a) for a in r.main_actions) for r in rows.itertuples()}
-        episodes = [e for e in posthoc_graph.subgoal_episodes(g, vid, action_times(narr, vid), labels)
-                    if len(e["nodes"]) >= MIN_ACTIONS]
-        try:
-            fps = len(gaze) / probe_video(video)["duration"]
-        except subprocess.CalledProcessError:
-            print(f"skipped {vid}: unreadable video, download it again")
-            continue
-        for e in episodes:
-            lo, hi = e["clip"]
-            disp, coverage = head_displacement(xy[int(lo * fps): int(hi * fps) + 1])
-            ep = Episode("hd_epic", f"{vid}__{e['subgoal']['id']}", e["subgoal"]["label"], e["nodes"], e["edges"],
-                         e["segments"], [a for a in actions if a.end > lo and a.start < hi],
-                         graph_source="Primitive actions of this subgoal; edges are annotated preconditions",
-                         clip=e["clip"], video_id=vid, task=f"{g['task']} · {e['subgoal'].get('group', '')}",
-                         node_kind="action", stats={"head_displacement_m": disp and round(disp, 3),
-                                                    "pose_coverage": round(coverage, 3)})
-            write_episode(EPISODES, ep, video, gaze)
-        print(f"built {vid}: {len(episodes)} subgoal episodes")
+        nodes, segments, done_before = recipe_steps(vid, recipes)
+        moved, primed, boxes = movements(vid)
+        ing, info = ingredients(vid, recipes)
+        video = DATA / "videos" / vid[:3] / f"{vid}.mp4"
+        tracks = [t for t in (activities(vid, probe_video(video)["duration"]), ing, moved, primed, sounds(vid)) if t.items]
+        info = {"Video": [vid, f"participant {vid[:3]}", f"{len(actions)} narrated actions, {len(moved.items)} object movements, "
+                               f"{len(sounds(vid).items)} sound events"]} | info
+        title = " + ".join(dict.fromkeys(n.group for n in nodes)) or "no recipe"
+        ep = Episode("hd_epic", vid, title, nodes, [], segments, actions, done_before,
+                     "HD-EPIC recipe steps with their step and prep times (no dependencies are provided)",
+                     video_id=vid, task=title, tracks=tracks, boxes=boxes, info=info)
+        print("built", write_episode(EPISODES, ep, video, load_framewise(vid)[0]), flush=True)
 
 
 def export_actions(video_ids: list[str] | None = None) -> None:

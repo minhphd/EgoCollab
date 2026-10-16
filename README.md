@@ -1,9 +1,10 @@
 # EgoCollab: egocentric datasets and tools
 
-Three egocentric datasets with eye gaze and task structure, their annotations, and reusable tools: a
+Three egocentric datasets with eye gaze and task structure, their annotations, reusable tools (a
 Gemini client, sentence embeddings, YOLO object and hand detection, hand contacts and gaze fixations,
-a frame cache, and an episode viewer. The `backup` branch keeps the fast-slow Bayesian inverse
-planning experiments built on these tools.
+a frame cache, an episode viewer), and two human-robot collaboration simulators: PARTNR (Habitat 3.0)
+and Online Watch-And-Help (VirtualHome). The `backup` branch keeps the fast-slow Bayesian inverse
+planning experiments on HD-EPIC built on these tools.
 
 ## Layout
 
@@ -23,12 +24,16 @@ helper/
     frames.py           JPEG frame cache, video decoding, frames with the gaze as a red glow
     detect.py           YOLOE open-vocabulary objects and a YOLO hand detector
     contacts.py         hand-object contacts and gaze fixations from detections, causal
-  viewer/               local web viewer for episodes (video, gaze, timelines, task graph)
+  partnr/               PARTNR in Habitat 3.0: setup, data download, smoke test
+  owah/                 Online Watch-And-Help (NOPA) in VirtualHome: setup, headless simulator, smoke test
+  viewer/               local web viewer for dataset episodes (video, gaze, step and action timelines)
   slurm/                cpu.sbatch and the dataset downloads
   environment.yml
 data/                   datasets, frame cache, viewer episodes (not in git)
 models/                 hf/ (Hugging Face cache), yolo/ (detector weights) (not in git)
 runs/, logs/            experiment outputs (not in git)
+third_party/partnr/     PARTNR code with habitat-lab (not in git)
+third_party/owah/       Online Watch-And-Help code, VirtualHome API and simulator (not in git)
 ```
 
 Every dataset folder has a README: what the dataset is, what is on disk, the annotation formats, the
@@ -38,7 +43,7 @@ code, and how to use it.
 | --- | --- | --- | --- |
 | HD-EPIC | 156 unscripted kitchen videos, Aria gaze and pose, 59,454 narrated actions, object movements, our post-hoc subgoal graphs | 118 GB | [helper/datasets/hd_epic](helper/datasets/hd_epic/README.md) |
 | Ego-Exo4D | 341 cooking takes with keysteps and Aria gaze, ego at 448 px | 81 GB | [helper/datasets/ego_exo4d](helper/datasets/ego_exo4d/README.md) |
-| IndustReal | 84 toy-car assembly recordings, HoloLens 2 gaze and hands, procedure-step labels | download pending | [helper/datasets/industreal](helper/datasets/industreal/README.md) |
+| IndustReal | 84 toy-car assembly recordings, HoloLens 2 gaze and hands, procedure-step labels | 55 GB | [helper/datasets/industreal](helper/datasets/industreal/README.md) |
 
 ## Setup
 
@@ -108,6 +113,21 @@ Measured on HD-EPIC, these cues are weak: the object in hand belongs to the curr
 times as often as to another, and detecting at 10 fps instead of 2 changes little. They give no
 signal for subgoal completion.
 
+## PARTNR (`helper/partnr/`)
+
+A Spot robot and a humanoid partner rearrange objects in furnished apartments from a free-form
+instruction; each task has a machine-checkable success test with ordering constraints (Chang et al.
+2024). `helper/partnr/setup.sh` installs the code and a Python 3.9 environment with habitat-sim 0.3.3;
+`helper/partnr/download.sh` fetches 26 GB of scenes, tasks and skill checkpoints into `data/partnr/`.
+Details: [helper/partnr/README.md](helper/partnr/README.md).
+
+## Online Watch-And-Help (`helper/owah/`)
+
+A helper agent watches a main agent in a VirtualHome apartment, infers her goal online and helps her
+finish faster (NOPA, Puig et al. 2023). `helper/owah/setup.sh` installs the code, the VirtualHome API,
+the Watch-And-Help task files, the simulator and a Python 3.7 environment; `helper/owah/start_sim.sh`
+runs the simulator headless on a compute node. Details: [helper/owah/README.md](helper/owah/README.md).
+
 ## Viewer
 
 ```bash
@@ -116,19 +136,37 @@ python -m helper.viewer.server --port 8766         # http://127.0.0.1:8766
 ```
 
 On a remote machine, forward the port: `ssh -L 8766:127.0.0.1:8766 <host>`. Pick a dataset, a video
-or task, then an episode. Left: the ego video with the gaze point and a 0.6 s trail, subgoal and action
-timelines. Right: the episode card and the graph coloured by status (done, active, ready, blocked). A
-file `pred_<name>.json` next to an episode adds an inferred graph over time. Click a node or a timeline
-to seek. Keys: space, arrows (5 s), `,` and `.` (one frame), `n` and `p` (next and previous episode).
+or task, then an episode.
+
+- Left: the ego video with the gaze point, a 0.6 s trail and labelled boxes; the other cameras of the
+  recording in sync below it (Ego-Exo4D's four exo views); then one timeline per label: steps, actions,
+  and every further track the dataset has. Overlapping intervals stack; hover a mark for its label and
+  details, click to seek.
+- Right: what every label says at the current time (step, narration with its details, and each track),
+  the steps coloured by status (done, active, preparing, not started), and the recording's static facts.
+
+The viewer shows only what each dataset provides; nothing annotated in this repo (the post-hoc subgoal
+graphs, predictions) is shown, and no dataset gives dependencies between steps, so no edges are drawn.
+
+| Dataset | What the viewer shows |
+| --- | --- |
+| HD-EPIC | narrations with verbs, nouns, main action and hands; recipe steps with step and prep times; high-level activities; object movements (from and to fixtures) with boxes at pick-up and put-down; gaze priming before each pick-up and put-down; sound events; ingredient weighing and adding; recipe, ingredient and nutrition facts |
+| Ego-Exo4D | keysteps with description, essential flag and category; the four exo cameras in sync; take facts and the full keystep list |
+| IndustReal | procedure steps and hand actions |
+
+Keys: space, arrows (5 s), `,` and `.` (one frame), `n` and `p` (next and previous episode).
 
 ## Episode format
 
 An episode lives in `data/episodes/<dataset>/<id>/`:
 
 - `video.mp4`: a symlink to the ego RGB video.
+- `view_<name>.mp4`: symlinks to other cameras of the same recording, time-aligned with the video.
 - `episode.json`: `nodes` (id, label, group), `edges` ([u, v]: v requires u), `segments` (node, start,
-  end, kind), `actions`, `done_before`, `graph_source`, `edge_notes`, `clip`, `video_id`, `task`,
-  `node_kind`, `stats`, `video` (size, fps, duration).
+  end, kind, detail), `actions` (start, end, label, detail), `tracks` (name, source, items: start, end,
+  label, detail; end = start for an instant), `boxes` (t, box [x1, y1, x2, y2] in [0, 1], label), `info`
+  ({title: text or [lines]}), `views`, `done_before`, `graph_source`, `clip`, `video_id`, `task`,
+  `video` (size, fps, duration).
 - `gaze.json`: `fps`, `t0` and `points`, one `[x, y]` in [0, 1] or `null` per sample.
 
 A new dataset needs only a build script that writes this format with `episode.write_episode`.

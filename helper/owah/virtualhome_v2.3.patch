@@ -1,0 +1,17 @@
+diff --git a/simulation/unity_simulator/comm_unity.py b/simulation/unity_simulator/comm_unity.py
+index 2ad28aa..2992343 100644
+--- a/simulation/unity_simulator/comm_unity.py
++++ b/simulation/unity_simulator/comm_unity.py
+@@ -220,8 +220,10 @@ class UnityCommunication(object):
+         :param int scene_index: integer between 0 and 6, corresponding to the apartment we want to load
+         :return: succes (bool)
+         """
+-        response = self.post_command({'id': str(time.time()), 'action': 'reset',
+-                                      'intParams': [] if scene_index is None else [scene_index]})
++        # Simulator v2.3 replaced the single "reset" action with "clear" followed by "environment".
++        params = [] if scene_index is None else [scene_index]
++        self.post_command({'id': str(time.time()), 'action': 'clear', 'intParams': params})
++        response = self.post_command({'id': str(time.time()), 'action': 'environment', 'intParams': params})
+         return response['success']
+ 
+     def fast_reset(self):

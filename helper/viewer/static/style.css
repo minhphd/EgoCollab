@@ -36,7 +36,7 @@ button { font: inherit; padding: 3px 10px; background: var(--panel); color: var(
 .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 2px 0 8px; vertical-align: -1px; }
 .sw.done { background: var(--done); } .sw.active { background: var(--active); }
 .sw.prep { border: 2px dashed var(--active); } .sw.ready { border: 2px solid var(--ready); }
-.sw.blocked { background: var(--blocked); }
+.sw.blocked, .sw.todo { background: var(--blocked); }
 .graph-source { font-size: 11px; color: var(--muted); margin: 2px 0 6px; }
 #graph { overflow: auto; max-height: 70vh; }
 .muted { color: var(--muted); font-size: 12px; }
@@ -47,19 +47,19 @@ button { font: inherit; padding: 3px 10px; background: var(--panel); color: var(
 .graph-card .edge-g:hover .edge { stroke: var(--ready); stroke-width: 2.4; opacity: 1; }
 .graph-card .node rect { fill: var(--panel); stroke: var(--blocked); stroke-width: 1.5; rx: 6; }
 .graph-card .node { cursor: pointer; }
-.graph-card .node.blocked text { fill: var(--muted); }
+.graph-card .node.blocked text, .graph-card .node.todo text { fill: var(--muted); }
 .graph-card .node.ready rect { stroke: var(--ready); stroke-width: 2; }
 .graph-card .node.done rect { fill: var(--done); stroke: var(--done); }
 .graph-card .node.done text { fill: #fff; }
 .graph-card .node.prep rect { stroke: var(--active); stroke-width: 2.5; stroke-dasharray: 5 3; }
 .graph-card .node.active rect { fill: var(--active); stroke: var(--active); }
 .graph-card .node.active text { fill: #fff; font-weight: 600; }
-#pred-graph { overflow: auto; max-height: 70vh; }
-.with-pred main { grid-template-columns: minmax(0, 1fr) minmax(300px, 0.75fr) minmax(300px, 0.75fr); }
-@media (max-width: 1300px) { .with-pred main { grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr); } }
-@media (max-width: 900px) { .with-pred main { grid-template-columns: 1fr; } }
-#pred-curve { width: 100%; display: block; background: var(--bg); border-radius: 4px; margin: 4px 0 2px; }
-.graph-card .edge.e-hit { stroke: var(--done); stroke-width: 1.8; opacity: .9; }
-.graph-card .edge.e-extra { stroke: #d64545; stroke-width: 1.8; opacity: .9; }
-.graph-card .edge.e-miss { stroke: var(--muted); stroke-dasharray: 4 3; opacity: .7; }
-.sw.ehit { background: var(--done); } .sw.eextra { background: #d64545; } .sw.emiss { border: 2px dashed var(--muted); }
+#tracks canvas.track { width: 100%; display: block; cursor: pointer; border-radius: 4px; background: var(--panel); }
+.views { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.views figure { margin: 0; }
+.views video { border-radius: 4px; background: #000; }
+.views figcaption { font-size: 11px; color: var(--muted); }
+.detail { display: block; font-size: 12px; color: var(--muted); }
+.info-k { font-weight: 600; margin-top: 8px; }
+#info ul { margin: 2px 0 0 18px; padding: 0; }
+#info li { font-size: 13px; overflow-wrap: anywhere; }

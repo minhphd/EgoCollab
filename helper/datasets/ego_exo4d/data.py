@@ -12,10 +12,9 @@ import csv
 import json
 import subprocess
 import sys
-from collections import defaultdict
 from pathlib import Path
 
-from ..episode import Episode, Node, Segment, precedence_dag, write_episode
+from ..episode import Episode, Node, Segment, write_episode
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data" / "ego_exo4d"
@@ -37,6 +36,21 @@ def keystep_annotations() -> dict:
         if path.exists():
             merged |= json.loads(path.read_text())["annotations"]
     return merged
+
+
+def taxonomy() -> dict:
+    """{scenario: {step id: {"name", "parent_name", "is_leafnode", ...}}} from the keystep files."""
+    for split in ("train", "val"):
+        path = DATA / "annotations" / f"keystep_{split}.json"
+        if path.exists():
+            return json.loads(path.read_text())["taxonomy"]
+    return {}
+
+
+def exo_videos(take: dict) -> dict[str, Path]:
+    """The exo cameras of a take at 448 px, time-aligned with the ego video."""
+    folder = ego_video(take).parent
+    return {p.stem: p for p in sorted(folder.glob("cam*.mp4"))}
 
 
 def has_gaze(take: dict) -> bool:
@@ -74,11 +88,7 @@ def load_gaze(take: dict) -> list:
 
 def build() -> None:
     takes = {t["take_uid"]: t for t in json.loads((DATA / "takes.json").read_text())}
-    ks = keystep_annotations()
-    orders = defaultdict(list)  # scenario -> first-occurrence keystep order of every annotated take
-    for a in ks.values():
-        order = [str(s["step_id"]) for s in sorted(a["segments"], key=lambda s: s["start_time"])]
-        orders[a["scenario"]].append(list(dict.fromkeys(order)))
+    ks, tax = keystep_annotations(), taxonomy()
     for uid, a in ks.items():
         take = takes.get(uid)
         if take is None or not ego_video(take).exists():
@@ -86,15 +96,23 @@ def build() -> None:
         segs = sorted(a["segments"], key=lambda s: s["start_time"])
         names = {str(s["step_id"]): s["step_name"] for s in segs}
         ids = list(dict.fromkeys(names))
+        steps = tax.get(a["scenario"], {})
+        detail = lambda s: {k: v for k, v in {
+            "description": s.get("step_description", ""), "essential": "yes" if s.get("is_essential") else "no",
+            "category": (steps.get(str(s["step_id"])) or {}).get("parent_name") or ""}.items() if v}
+        info = {"Take": [take["take_name"], f"task: {take['task_name']} ({take['parent_task_name']})",
+                         f"university: {take['university_name']}", f"duration: {take['duration_sec']:.0f} s",
+                         f"best exo camera: {take.get('best_exo') or 'none'}", f"participant: {take['participant_uid']}"],
+                "Keysteps in this take": [f"{s['step_name']}: {s.get('step_description', '')}" for s in segs]}
         ep = Episode(
             "ego_exo4d", take["take_name"], take.get("task_name") or a["scenario"],
             nodes=[Node(i, names[i], a["scenario"]) for i in ids],
-            edges=precedence_dag(orders[a["scenario"]], ids, min_support=2),
-            segments=[Segment(str(s["step_id"]), s["start_time"], s["end_time"]) for s in segs],
-            graph_source=f"Keystep precedence shared by all {len(orders[a['scenario']])} annotated {a['scenario']} takes",
-            task=a["scenario"],
+            edges=[],  # Ego-Exo4D gives no keystep dependencies
+            segments=[Segment(str(s["step_id"]), s["start_time"], s["end_time"], detail=detail(s)) for s in segs],
+            graph_source="Ego-Exo4D keystep annotations (no dependencies are provided)",
+            task=a["scenario"], info=info,
         )
-        print("built", write_episode(EPISODES, ep, ego_video(take), load_gaze(take), GAZE_SUBSAMPLE))
+        print("built", write_episode(EPISODES, ep, ego_video(take), load_gaze(take), GAZE_SUBSAMPLE, exo_videos(take)))
 
 
 def main() -> None:

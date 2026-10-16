@@ -1,0 +1,28 @@
+{
+  "files.watcherExclude": {
+    "**/data/**": true,
+    "**/third_party/**": true,
+    "**/runs/**": true,
+    "**/models/**": true,
+    "**/logs/**": true,
+    "**/__pycache__/**": true
+  },
+  "search.exclude": {
+    "**/data": true,
+    "**/third_party": true,
+    "**/runs": true,
+    "**/models": true,
+    "**/logs": true
+  },
+  "files.exclude": {
+    "**/__pycache__": true
+  },
+  "python.analysis.exclude": [
+    "**/data/**",
+    "**/third_party/**",
+    "**/runs/**",
+    "**/models/**",
+    "**/logs/**"
+  ],
+  "python.analysis.indexing": false
+}

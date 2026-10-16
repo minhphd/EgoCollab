@@ -2,21 +2,21 @@
 
 Built from the post-hoc task graphs in annotations/ next to this file. Every narrated action belongs to
 at most one subgoal. A subgoal is done once its last action ends; the current subgoal at t is the one
-whose action runs at t, with pauses inside one subgoal kept.
+whose action runs at t, with pauses inside one subgoal kept. These are our annotations, not HD-EPIC's,
+so the viewer does not show them.
 
-    python -m helper.datasets.hd_epic.tasks export     # every video as a viewer episode (dataset hd_epic_task)
+    from helper.datasets.hd_epic.tasks import load
+    task = load(3)["P04-20240414-175337"]
 """
 
 import json
 import random
-import sys
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 
-from ..episode import Action, Episode, Node, Segment, write_episode
 from . import posthoc_graph
-from .data import DATA, EPISODES, action_times, load_framewise, load_narrations
+from .data import action_times, load_narrations
 
 
 @dataclass
@@ -112,19 +112,3 @@ def load(min_nodes: int = 1) -> dict[str, Task]:
 
 def clock(s: float) -> str:
     return f"{int(s) // 60}:{int(s) % 60:02d}"
-
-
-def export() -> None:
-    narr = load_narrations()
-    for vid, task in load().items():
-        rows = narr[narr.video_id == vid]
-        actions = [Action(r.start_timestamp, r.end_timestamp, r.narration) for r in rows.itertuples()]
-        ep = Episode("hd_epic_task", vid, task.title, [Node(v, task.label[v], task.group[v]) for v in task.nodes],
-                     task.edges, [Segment(v, task.first[v], task.last[v]) for v in task.nodes], actions,
-                     graph_source="Annotated required orderings between subgoals", video_id=vid,
-                     task=f"{vid[:3]} · {task.title}", node_kind="subgoal")
-        print("built", write_episode(EPISODES, ep, DATA / "videos" / vid[:3] / f"{vid}.mp4", load_framewise(vid)[0]), flush=True)
-
-
-if __name__ == "__main__" and sys.argv[1:] == ["export"]:
-    export()

@@ -14,21 +14,10 @@ with the ego video downscaled to 448 px.
   `helper/slurm/egoexo_cooking.sbatch` uses a profile named `egoexo` (`aws configure --profile egoexo`).
   The repo-root file `EgoExoCreds` is git-ignored; never print or commit it.
 
-## What is on disk
+## The data
 
 Everything lives in `data/ego_exo4d/` at the repo root (not in git), 81 GB.
-
-| Path | Contents |
-| --- | --- |
-| `takes.json`, `captures.json`, `participants.json`, `physical_setting.json`, `visual_objects.json`, `metadata.json` | release metadata: one record per take (`take_uid`, `take_name`, `task_name`, `duration_sec`, `root_dir`, `frame_aligned_videos`, `has_trimmed_eye_gaze`, ...) |
-| `annotations/keystep_train.json`, `keystep_val.json` | keystep annotations per take: `scenario` and `segments` (`step_id`, `step_name`, `start_time`, `end_time`, ...) |
-| `annotations/splits.json` | the benchmark splits |
-| `cooking_uids.txt` | the 341 take uids downloaded |
-| `takes/<take_name>/frame_aligned_videos/downscaled/448/*.mp4` | every camera of the take at 448 px: the Aria ego stream (`aria*.mp4`) and the exo cameras (`cam0x.mp4`) |
-| `takes/<take_name>/eye_gaze/` | `general_eye_gaze.csv`, `personalized_eye_gaze.csv` (3D), their `_2d.csv` versions (pixels on the 1408 px Aria frame, one row per three video frames, 10 Hz) and `summary.json` |
-
-Takes per recipe: Cucumber and Tomato Salad 62, Omelet 59, Tomato and Eggs 46, Milk Tea 46, Noodles 35,
-Sesame-Ginger Asian Salad 29, Scrambled Eggs 27, Coffee Latte 18, Chai Tea 14, Pasta 4, Sushi Rolls 1.
+[data/ego_exo4d/README.md](../../../data/ego_exo4d/README.md) describes the files and their formats.
 
 ## Code in this folder
 
@@ -62,11 +51,11 @@ video, gaze = ego_video(takes[uid]), load_gaze(takes[uid])   # gaze[i] = [x, y] 
 ## Viewer episodes (`data/episodes/ego_exo4d/`, 341)
 
 - One per take. Nodes are the keysteps the take contains; segments are its keystep annotations
-  (a keystep can occur several times).
-- The graph is not ground truth: Ego-Exo4D has no dependency graph. An edge u to v is added when u
-  starts before v in every annotated take of the scenario that contains both, with at least two such
-  takes, then implied edges are removed (`episode.precedence_dag`). It is the order people followed,
-  not the order the recipe requires.
+  (a keystep can occur several times), each with its description, essential flag and taxonomy
+  category. The four exo cameras play in sync (`view_cam0x.mp4`), and the info panel lists the take's
+  facts and every keystep.
+- No edges: Ego-Exo4D gives no dependencies between keysteps, and the viewer shows only what the
+  dataset provides.
 - Gaze rows map to every third video frame.
 
 ## Things to know

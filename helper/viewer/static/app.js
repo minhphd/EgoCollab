@@ -1,15 +1,17 @@
-// Episode viewer: plays an ego clip with gaze and tracks node completion in its task graph.
+// Episode viewer: plays an ego video with gaze and every label of its dataset: steps, actions, label tracks,
+// boxes on the video, other cameras in sync, and static info.
 const $ = (id) => document.getElementById(id);
 const video = $("video"), overlay = $("overlay"), timeline = $("timeline"), actionsBar = $("actions");
-const TRAIL_SEC = 0.6, PAD = 12;
+const TRAIL_SEC = 0.6, PAD = 12, BOX_SEC = 0.6, LANE_H = 7, MAX_LANES = 10;
 const BOX = {
   subgoal: { w: 150, h: 46, gapX: 12, gapY: 26, chars: 19, lines: 3 },
   action: { w: 132, h: 36, gapX: 10, gapY: 20, chars: 18, lines: 2 },
 };
 
-const DATASETS = { hd_epic: "HD-EPIC (kitchen)", hd_epic_task: "HD-EPIC tasks (subgoal graphs)", ego_exo4d: "Ego-Exo4D (cooking)", industreal: "IndustReal (tabletop assembly)" };
+const DATASETS = { hd_epic: "HD-EPIC (kitchen)", ego_exo4d: "Ego-Exo4D (cooking)", industreal: "IndustReal (tabletop assembly)", partnr: "PARTNR (simulated home)" };
 
-let all = [], list = [], key = null, ep = null, layout = null, truth = new Set(), pred = null, predIdx = -2, gaze = null, preds = {}, nodeColor = {}, lastKey = "";
+let all = [], list = [], key = null, ep = null, layout = null, gaze = null, preds = {}, nodeColor = {}, lastKey = "";
+let tracks = [], views = [], nowKey = "";
 
 async function init() {
   all = await (await fetch("/api/episodes")).json();
@@ -58,19 +60,16 @@ async function load(path) {
   preds = Object.fromEntries(ep.nodes.map((n) => [n.id, []]));
   ep.edges.forEach(([u, v]) => preds[v]?.push(u));
   nodeColor = Object.fromEntries(ep.nodes.map((n, i) => [n.id, `hsl(${(i * 137.5) % 360} 60% 55%)`]));
-  $("graph-title").textContent = ep.node_kind === "action" ? "Action graph" : "Task graph";
+  $("graph-title").textContent = ep.edges.length ? "Task graph" : "Steps";
   $("graph-source").textContent = ep.graph_source;
   $("actions-row").hidden = !ep.actions.length;
   $("episode-pos").textContent = `${list.findIndex((e) => e.path === path) + 1} / ${list.length}`;
   lastKey = "";
   video.src = `/data/${path}/video.mp4`;
   drawGraph();
-  const names = all.find((e) => e.path === path)?.preds ?? [];
-  $("pred-col").hidden = !names.length;
-  document.body.classList.toggle("with-pred", names.length > 0);
-  $("pred-model").innerHTML = names.map((n) => `<option>${esc(n)}</option>`).join("");
-  $("pred-model").onchange = () => loadPred(path, $("pred-model").value);
-  await loadPred(path, names[0]);
+  buildTracks();
+  buildViews(path);
+  renderInfo();
 }
 
 // ---------- clip window ----------
@@ -94,7 +93,7 @@ function stateAt(t) {
   const status = {};
   for (const n of ep.nodes) {
     status[n.id] = active.has(n.id) ? "active" : prep.has(n.id) ? "prep" : done.has(n.id) ? "done"
-      : preds[n.id].every((p) => done.has(p)) ? "ready" : "blocked";
+      : !ep.edges.length ? "todo" : preds[n.id].every((p) => done.has(p)) ? "ready" : "blocked";
   }
   return { status, active, prep, done };
 }
@@ -112,10 +111,12 @@ function drawOverlay(t) {
   overlay.style.width = `${r.width}px`; overlay.style.height = `${r.height}px`;
   const ctx = overlay.getContext("2d");
   ctx.scale(dpr, dpr);
-  if (!vw || !$("show-gaze").checked) return;
-  // The video is letterboxed inside its element; map normalised gaze into the drawn image.
+  if (!vw) return;
+  // The video is letterboxed inside its element; map normalised coordinates into the drawn image.
   const s = Math.min(r.width / vw, r.height / vh), ox = (r.width - vw * s) / 2, oy = (r.height - vh * s) / 2;
   const toPx = (p) => [ox + p[0] * vw * s, oy + p[1] * vh * s];
+  drawBoxes(ctx, t, toPx);
+  if (!$("show-gaze").checked) return;
   const color = getComputedStyle(document.documentElement).getPropertyValue("--gaze");
   if ($("show-trail").checked) {
     const n = Math.round(TRAIL_SEC * gaze.fps);
@@ -200,13 +201,11 @@ function drawGraph() {
     y += 6;
   }
   layout = { pos, width, height: y, titles, box };
-  truth = closure(ep.edges);
   el.innerHTML = graphSvg(ep.edges.map(([u, v], i) => ({ u, v, cls: "edge", note: ep.edge_notes?.[i] })), "node");
   el.querySelectorAll(".node").forEach((g) => (g.onclick = () => seekToNode(g.dataset.id)));
-  predIdx = -2;
 }
 
-// One graph as SVG on the shared layout; node ids are <prefix>-<id>.
+// The graph as SVG on the layout; node ids are <prefix>-<id>.
 function graphSvg(edges, prefix) {
   const { pos, width, height, titles, box } = layout;
   const label = Object.fromEntries(ep.nodes.map((n) => [n.id, n.label]));
@@ -233,82 +232,6 @@ function graphSvg(edges, prefix) {
 
 // ---------- inferred graph ----------
 // Pairs (u, v) with a path u -> ... -> v, as "u>v" strings.
-function closure(edges) {
-  const succ = {};
-  edges.forEach(([u, v]) => (succ[u] ??= []).push(v));
-  const out = new Set();
-  for (const { id } of ep.nodes) {
-    const seen = new Set(), stack = [...(succ[id] ?? [])];
-    while (stack.length) { const m = stack.pop(); if (!seen.has(m)) { seen.add(m); stack.push(...(succ[m] ?? [])); } }
-    seen.forEach((m) => m !== id && out.add(`${id}>${m}`));
-  }
-  return out;
-}
-
-const statedEdges = (est) => est.edges.filter(([, , p]) => p >= 0.5);
-
-// Edge F1 on transitive closure and progress accuracy of one estimate, against the truth at its time.
-function scoreOf(rec) {
-  const g = closure(statedEdges(rec.estimate)), hit = [...g].filter((e) => truth.has(e)).length;
-  const p = hit / Math.max(1, g.size), r = hit / Math.max(1, truth.size);
-  const done = stateAt(rec.t).done;
-  const progress = ep.nodes.filter((n) => rec.estimate.done.includes(n.id) === done.has(n.id)).length / ep.nodes.length;
-  return { f1: p + r ? (2 * p * r) / (p + r) : 0, progress };
-}
-
-async function loadPred(path, name) {
-  pred = name ? await fetch(`/data/${path}/pred_${name}.json`).then((r) => r.json()) : null;
-  pred?.records.forEach((r) => { r.estimate ??= { done: [], current: null, next: [], edges: [] }; r.score = scoreOf(r); });
-  predIdx = -2;
-  render();
-}
-
-// The estimate on screen is the last one whose answer has arrived by t (observed time + latency).
-function drawPred(t) {
-  if (!pred || !layout) return;
-  let i = -1;
-  while (i + 1 < pred.records.length && pred.records[i + 1].t_avail <= t) i++;
-  if (i !== predIdx) { predIdx = i; drawPredGraph(i >= 0 ? pred.records[i] : null); }
-  drawCurve(t);
-}
-
-function drawPredGraph(rec) {
-  const est = rec?.estimate ?? { done: [], current: null, next: [], edges: [] };
-  const stated = statedEdges(est), g = closure(stated);
-  const shown = stated.map(([u, v, p]) => ({ u, v, cls: truth.has(`${u}>${v}`) ? "edge e-hit" : "edge e-extra", note: `p = ${p}` }));
-  const missed = ep.edges.filter(([u, v]) => !g.has(`${u}>${v}`)).map(([u, v]) => ({ u, v, cls: "edge e-miss", note: "missed" }));
-  $("pred-graph").innerHTML = graphSvg([...missed, ...shown], "pnode");
-  for (const n of ep.nodes) {
-    const st = est.done.includes(n.id) ? "done" : est.current === n.id ? "active" : est.next.includes(n.id) ? "ready" : "blocked";
-    document.getElementById(`pnode-${cssId(n.id)}`)?.setAttribute("class", `node ${st}`);
-  }
-  const right = shown.filter((e) => e.cls.includes("hit")).length;
-  $("pred-meta").textContent = !rec ? `${pred.model} · waiting for the first estimate`
-    : `${pred.model} · ${rec.prior ? "prior from the task description only" : `frames up to ${fmt(rec.t)}, shown at ${fmt(rec.t_avail)} (latency ${rec.latency.toFixed(1)} s)`}`
-      + ` · edges: ${right} right, ${shown.length - right} wrong, ${missed.length} of ${ep.edges.length} true missed · edge F1 ${rec.score.f1.toFixed(2)}`;
-}
-
-function drawCurve(t) {
-  const c = $("pred-curve"), dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = 46;
-  if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); c.height = h * dpr; }
-  const g = c.getContext("2d"), css = getComputedStyle(document.documentElement);
-  g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  g.clearRect(0, 0, w, h);
-  const [lo, hi] = clip(), x = (s) => ((s - lo) / (hi - lo)) * w, y = (v) => h - 4 - v * (h - 8);
-  for (const [key, color] of [["progress", "--done"], ["f1", "--ready"]]) {
-    g.strokeStyle = css.getPropertyValue(color);
-    g.lineWidth = 1.5;
-    g.beginPath();
-    pred.records.forEach((r, i) => {
-      g.lineTo(x(r.t_avail), y(r.score[key]));
-      g.lineTo(x(pred.records[i + 1]?.t_avail ?? hi), y(r.score[key]));
-    });
-    g.stroke();
-  }
-  g.strokeStyle = css.getPropertyValue("--active");
-  g.beginPath(); g.moveTo(x(t), 0); g.lineTo(x(t), h); g.stroke();
-}
-
 function seekToNode(id) {
   const seg = ep.segments.filter((s) => s.node === id).sort((a, b) => a.start - b.start)[0];
   if (seg) video.currentTime = seg.start;
@@ -334,30 +257,22 @@ function updateCard(t, state) {
   const byId = Object.fromEntries(ep.nodes.map((n) => [n.id, n]));
   const cur = [...state.active].map((id) => byId[id]), pre = [...state.prep].map((id) => byId[id]);
   const complete = state.done.size === ep.nodes.length;
-  if (ep.node_kind === "action") {
-    $("sg-kind").textContent = `Subgoal · ${complete ? "complete" : "in progress"} · ${ep.task}`;
-    $("sg-title").textContent = ep.title;
-    const st = ep.stats ?? {};
-    $("sg-group").textContent = [ep.video_id,
-      st.head_displacement_m != null ? `head moves at most ${st.head_displacement_m.toFixed(2)} m` : ""].filter(Boolean).join(" · ");
-  } else {
-    const shown = cur.length ? cur : pre;
-    $("sg-kind").textContent = cur.length ? "Current subgoal · executing" : pre.length ? "Current subgoal · preparing" : "Between subgoals";
-    $("sg-title").textContent = shown.length ? shown.map((n) => n.label).join("  |  ") : "No subgoal in progress";
-    $("sg-group").textContent = [...new Set(shown.map((n) => n.group))].join(", ");
-  }
+  const shown = cur.length ? cur : pre;
+  $("sg-kind").textContent = cur.length ? "Current step · executing" : pre.length ? "Current step · preparing" : "Between steps";
+  $("sg-title").textContent = shown.length ? shown.map((n) => n.label).join("  |  ") : "No step in progress";
+  const segDetail = ep.segments.filter((g) => g.start <= t && t < g.end && g.detail && Object.keys(g.detail).length).map((g) => detailText(g.detail));
+  $("sg-group").textContent = [[...new Set(shown.map((n) => n.group))].join(", "), ...segDetail].filter(Boolean).join(" · ");
   $("subgoal").classList.toggle("active", cur.length > 0 && !complete);
   $("subgoal").classList.toggle("complete", complete);
   $("sg-current").textContent = cur.length ? cur.map((n) => n.label).join("; ") : "-";
-  $("sg-next").textContent = few(ep.nodes.filter((n) => state.status[n.id] === "ready").map((n) => n.label));
   const act = ep.actions.find((a) => a.start <= t && t < a.end);
   $("sg-action").textContent = act ? act.label : "-";
+  $("sg-action-detail").textContent = act ? detailText(act.detail) : "";
   const [lo, hi] = clip();
-  $("sg-progress").textContent = `${state.done.size} / ${ep.nodes.length} ${ep.node_kind === "action" ? "actions" : "subgoals"} done`
+  $("sg-progress").textContent = `${state.done.size} / ${ep.nodes.length} steps done`
     + ` · ${fmt(Math.max(0, t - lo))} / ${fmt(hi - lo)}`;
 }
 
-const few = (xs) => (xs.length ? xs.slice(0, 3).join("; ") + (xs.length > 3 ? ` (+${xs.length - 3})` : "") : "-");
 
 // ---------- timelines ----------
 function drawBar(canvas, h, items, colorOf, t) {
@@ -392,8 +307,119 @@ for (const c of [timeline, actionsBar]) {
   c.addEventListener("mousemove", (e) => {
     const t = timeAt(c, e), items = c === timeline ? ep.segments : ep.actions;
     const hit = items.find((s) => s.start <= t && t < s.end);
-    c.title = hit ? (hit.label ?? ep.nodes.find((n) => n.id === hit.node)?.label) : fmt(t - clip()[0]);
+    c.title = hit ? [hit.label ?? ep.nodes.find((n) => n.id === hit.node)?.label, detailText(hit.detail)].filter(Boolean).join("\n")
+      : fmt(t - clip()[0]);
   });
+}
+
+// ---------- label tracks, boxes, other cameras, info ----------
+const labelColor = (label) => { let h = 0; for (const c of String(label)) h = (h * 31 + c.charCodeAt(0)) % 360; return `hsl(${h} 55% 55%)`; };
+const detailText = (d) => Object.entries(d ?? {}).map(([k, v]) => `${k}: ${v}`).join(" · ");
+const labelWithDetail = (it) => it.label + (Object.keys(it.detail ?? {}).length ? ` (${detailText(it.detail)})` : "");
+
+function buildTracks() {
+  const box = $("tracks");
+  box.innerHTML = "";
+  tracks = (ep.tracks ?? []).map((tr) => {
+    const items = [...tr.items].sort((a, b) => a.start - b.start), ends = [];
+    for (const it of items) {  // overlapping intervals stack in lanes
+      let k = ends.findIndex((e) => e <= it.start);
+      if (k < 0) { k = ends.length; ends.push(0); }
+      ends[k] = Math.max(it.end, it.start + 0.3);
+      it.lane = Math.min(k, MAX_LANES - 1);
+    }
+    const label = document.createElement("div"), canvas = document.createElement("canvas");
+    label.className = "timeline-label";
+    label.textContent = `${tr.name} · ${items.length}`;
+    label.title = tr.source;
+    canvas.className = "track";
+    box.append(label, canvas);
+    const view = { name: tr.name, items, canvas, h: Math.max(14, Math.min(ends.length, MAX_LANES) * LANE_H + 2) };
+    canvas.addEventListener("click", (e) => (video.currentTime = timeAt(canvas, e)));
+    canvas.addEventListener("mousemove", (e) => {
+      const t = timeAt(canvas, e), tol = (4 * (clip()[1] - clip()[0])) / canvas.clientWidth;
+      const hit = view.items.filter((it) => (it.end > it.start ? it.start <= t && t < it.end : Math.abs(it.start - t) <= tol));
+      canvas.title = hit.length ? hit.map(labelWithDetail).join("\n") : fmt(t - clip()[0]);
+    });
+    return view;
+  });
+}
+
+function drawTracks(t) {
+  const [lo, hi] = clip(), ink = getComputedStyle(document.documentElement).getPropertyValue("--ink");
+  for (const v of tracks) {
+    const c = v.canvas, w = c.clientWidth, dpr = window.devicePixelRatio || 1;
+    if (c.width !== Math.round(w * dpr) || c.height !== Math.round(v.h * dpr)) {
+      c.width = Math.round(w * dpr); c.height = Math.round(v.h * dpr); c.style.height = `${v.h}px`;
+    }
+    const g = c.getContext("2d"), X = (s) => ((s - lo) / (hi - lo)) * w;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, v.h);
+    for (const it of v.items) {
+      g.fillStyle = labelColor(it.label);
+      if (it.end > it.start) { g.globalAlpha = 0.85; g.fillRect(X(it.start), 1 + it.lane * LANE_H, Math.max(1.5, X(it.end) - X(it.start)), LANE_H - 1); }
+      else { g.globalAlpha = 1; g.fillRect(X(it.start) - 1, 0, 2, v.h); }  // an instant
+    }
+    g.globalAlpha = 1;
+    g.fillStyle = ink;
+    g.fillRect(X(t) - 1, 0, 2, v.h);
+  }
+}
+
+// What every track says now: intervals around t, instants in the last 2 s.
+function updateNow(t) {
+  const rows = tracks.map((v) => {
+    const hits = v.items.filter((it) => (it.end > it.start ? it.start <= t && t < it.end : it.start <= t && t - it.start < 2));
+    if (!hits.length) return "";
+    const shown = hits.slice(0, 4).map((it) => esc(it.label) + (Object.keys(it.detail ?? {}).length ? `<span class="detail">${esc(detailText(it.detail))}</span>` : ""));
+    return `<div class="sg-row"><span class="k">${esc(v.name)}</span><span>${shown.join("")}${hits.length > 4 ? `<span class="detail">+${hits.length - 4} more</span>` : ""}</span></div>`;
+  }).join("");
+  if (rows !== nowKey) { $("now").innerHTML = rows; nowKey = rows; }
+}
+
+// Boxes are labelled only at certain frames (HD-EPIC: an object's pick-up and put-down); show them near those times.
+function drawBoxes(ctx, t, toPx) {
+  if (!$("show-boxes").checked || !ep.boxes?.length) return;
+  ctx.font = "13px system-ui, sans-serif";
+  for (const b of ep.boxes) {
+    const d = Math.abs(b.t - t);
+    if (d > BOX_SEC) continue;
+    const [x1, y1] = toPx([b.box[0], b.box[1]]), [x2, y2] = toPx([b.box[2], b.box[3]]);
+    ctx.globalAlpha = 1 - (0.7 * d) / BOX_SEC;
+    ctx.strokeStyle = ctx.fillStyle = "#ffd400";
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    ctx.fillText(b.label, x1 + 3, Math.max(14, y1 - 4));
+  }
+  ctx.globalAlpha = 1;
+}
+
+function buildViews(path) {
+  const box = $("views");
+  box.innerHTML = "";
+  views = (ep.views ?? []).map((name) => {
+    const fig = document.createElement("figure"), v = document.createElement("video"), cap = document.createElement("figcaption");
+    Object.assign(v, { src: `/data/${path}/view_${name}.mp4`, muted: true, preload: "auto", playsInline: true });
+    cap.textContent = name;
+    fig.append(v, cap);
+    box.append(fig);
+    return v;
+  });
+  box.hidden = !views.length;
+}
+
+function syncViews() {
+  for (const v of views) if (!v.seeking && Math.abs(v.currentTime - video.currentTime) > 0.25) v.currentTime = video.currentTime;
+}
+video.addEventListener("play", () => views.forEach((v) => v.play().catch(() => {})));
+video.addEventListener("pause", () => views.forEach((v) => v.pause()));
+video.addEventListener("ratechange", () => views.forEach((v) => (v.playbackRate = video.playbackRate)));
+
+function renderInfo() {
+  const entries = Object.entries(ep.info ?? {});
+  $("info-card").hidden = !entries.length;
+  $("info").innerHTML = entries.map(([k, v]) => `<div class="info-k">${esc(k)}</div>`
+    + (Array.isArray(v) ? `<ul>${v.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : `<div>${esc(v)}</div>`)).join("");
 }
 
 // ---------- loop ----------
@@ -404,7 +430,9 @@ function render() {
   updateGraph(state);
   updateCard(t, state);
   drawTimelines(t);
-  drawPred(t);
+  drawTracks(t);
+  updateNow(t);
+  syncViews();
 }
 
 function tick() {
@@ -413,7 +441,7 @@ function tick() {
   else requestAnimationFrame(tick);
 }
 window.addEventListener("resize", () => { if (ep) { drawGraph(); lastKey = ""; render(); } });
-$("show-gaze").onchange = $("show-trail").onchange = render;
+$("show-gaze").onchange = $("show-trail").onchange = $("show-boxes").onchange = render;
 
 document.addEventListener("keydown", (e) => {
   if (e.target.tagName === "SELECT") return;

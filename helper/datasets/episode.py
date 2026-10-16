@@ -2,13 +2,16 @@
 
 An episode is a folder `<root>/<dataset>/<episode_id>/` holding:
   video.mp4     symlink to the egocentric RGB stream
-  episode.json  metadata, task graph, node segments and narrated actions
+  view_<name>.mp4  symlinks to other cameras of the same recording, played in sync (optional)
+  episode.json  metadata, the dataset's steps (nodes, optional edges) and their segments, narrated actions,
+                further label tracks, boxes on the video, and static info
   gaze.json     {"fps": float, "t0": float, "points": [[x, y] | null, ...]}, x and y normalised to [0, 1]
 
 An episode either covers a whole video (`clip` is None) or one clip of it, such as one subgoal.
 """
 
-import itertools
+from __future__ import annotations
+
 import json
 import os
 import shutil
@@ -31,12 +34,29 @@ class Segment:
     start: float
     end: float
     kind: str = "step"  # "step" means the node is being executed, "prep" means preparing for it
+    detail: dict = field(default_factory=dict)  # extra labels of this occurrence, shown on hover
 
 
 @dataclass
 class Action:
     start: float
     end: float
+    label: str
+    detail: dict = field(default_factory=dict)  # e.g. verbs, nouns, hands
+
+
+@dataclass
+class Track:
+    """One labelled timeline row. Items are {"start", "end", "label", "detail"}; end == start is an instant."""
+    name: str
+    items: list[dict]
+    source: str = ""  # which annotation file the labels come from
+
+
+@dataclass
+class Box:
+    t: float  # seconds
+    box: list[float]  # [x1, y1, x2, y2] in [0, 1] of the frame
     label: str
 
 
@@ -57,6 +77,10 @@ class Episode:
     task: str = ""  # task the episode belongs to, shown as context
     node_kind: str = "subgoal"  # what a node is: "subgoal" or "action"
     stats: dict = field(default_factory=dict)  # per-episode measurements, e.g. head displacement
+    tracks: list[Track] = field(default_factory=list)
+    boxes: list[Box] = field(default_factory=list)
+    info: dict = field(default_factory=dict)  # static facts: {title: text or [lines]}
+    views: list[str] = field(default_factory=list)  # names of the extra cameras (view_<name>.mp4)
 
 
 def _ffprobe() -> str:
@@ -77,38 +101,20 @@ def probe_video(path: Path) -> dict:
             "duration": float(info["format"]["duration"]), "codec": s["codec_name"]}
 
 
-def transitive_reduction(nodes: list[str], edges: set[tuple[str, str]]) -> list[tuple[str, str]]:
-    """Drops every edge (u, v) that is implied by a longer path u -> ... -> v."""
-    succ = {n: {v for u, v in edges if u == n} for n in nodes}
-    reach = {n: set() for n in nodes}
-    for n in nodes:
-        stack = list(succ[n])
-        while stack:
-            m = stack.pop()
-            if m not in reach[n]:
-                reach[n].add(m)
-                stack.extend(succ[m])
-    return sorted((u, v) for u, v in edges if not any(v in reach[w] for w in succ[u] if w != v))
-
-
-def precedence_dag(orders: list[list[str]], nodes: list[str], min_support: int = 1) -> list[tuple[str, str]]:
-    """Partial order from demonstrations: u -> v when u starts before v in every order containing both."""
-    edges = set()
-    for u, v in itertools.permutations(nodes, 2):
-        both = [o for o in orders if u in o and v in o]
-        if len(both) >= min_support and all(o.index(u) < o.index(v) for o in both):
-            edges.add((u, v))
-    return transitive_reduction(nodes, edges)
-
-
-def write_episode(root: Path, ep: Episode, video: Path, gaze: list, gaze_stride: int = 1) -> Path:
-    """Writes the episode folder; gaze row i belongs to video frame i * gaze_stride."""
+def write_episode(root: Path, ep: Episode, video: Path, gaze: list, gaze_stride: int = 1,
+                  views: dict[str, Path] | None = None) -> Path:
+    """Writes the episode folder; gaze row i belongs to video frame i * gaze_stride. `views` maps a camera
+    name to another video of the same recording, time-aligned with `video`."""
     out = Path(root) / ep.dataset / ep.id
     out.mkdir(parents=True, exist_ok=True)
-    link = out / "video.mp4"
-    if link.is_symlink() or link.exists():
-        link.unlink()
-    os.symlink(Path(video).resolve(), link)
+    for old in out.glob("view_*.mp4"):
+        old.unlink()
+    ep.views = sorted(views or {})
+    for name, path in [("video.mp4", video)] + [(f"view_{k}.mp4", v) for k, v in (views or {}).items()]:
+        link = out / name
+        if link.is_symlink() or link.exists():
+            link.unlink()
+        os.symlink(Path(path).resolve(), link)
     info = probe_video(video)
     (out / "episode.json").write_text(json.dumps(asdict(ep) | {"video": info}, indent=1))
     fps, t0 = info["fps"] / gaze_stride, 0.0

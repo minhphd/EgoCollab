@@ -16,11 +16,7 @@ A primitive's `after` lists integers (same video) or "<video_id>-<index>" string
 import json
 from pathlib import Path
 
-from ..episode import Node, Segment
-
 ANNOTATIONS = Path(__file__).resolve().parent / "annotations"
-MERGE_GAP_SEC = 2.0  # actions of one node closer than this form one segment
-CLIP_PAD_SEC = 1.0  # context shown before the first and after the last action of a clip
 
 
 def parse_ranges(spec: str) -> list[int]:
@@ -130,28 +126,3 @@ def validate(g: dict, times: dict[str, dict[int, tuple[float, float]]]) -> tuple
     warnings += [f"subgoal edge {e['from']} -> {e['to']} has no primitive edge" for e in g["edges"]
                  if (e["from"], e["to"]) not in realised]
     return errors, warnings
-
-
-def subgoal_episodes(g: dict, vid: str, times: dict[int, tuple[float, float]], default_labels: dict[int, str]) -> list[dict]:
-    """One episode per subgoal worked on in `vid`: its primitive actions and the edges among them.
-
-    Edges from other subgoals are dropped, so every node starts incomplete.
-    """
-    sub_of, labels = action_owner(g), g.get("primitives", {}).get(vid, {})
-    edges = [(u, v) for u, v in primitive_edges(g) if sub_of.get(u) == sub_of.get(v)]
-    out = []
-    for n in g["nodes"]:
-        idx = [i for i in parse_ranges(n["actions"].get(vid, "")) if i in times]
-        if not idx:
-            continue
-        ids = {f"{vid}-{i}" for i in idx}
-        start, end = min(times[i][0] for i in idx), max(times[i][1] for i in idx)
-        out.append({
-            "subgoal": n,
-            "nodes": [Node(f"{vid}-{i}", labels.get(str(i), {}).get("label") or default_labels.get(i, f"action {i}"),
-                           n["label"]) for i in idx],
-            "edges": [(u, v) for u, v in edges if u in ids and v in ids],
-            "segments": [Segment(f"{vid}-{i}", *times[i]) for i in idx],
-            "clip": (max(0.0, start - CLIP_PAD_SEC), end + CLIP_PAD_SEC),
-        })
-    return out

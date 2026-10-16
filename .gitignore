@@ -1,8 +1,23 @@
-# Data, model weights, experiment outputs and logs live next to the code but never in git
-data/
+# Data, model weights, experiment outputs and logs live next to the code but never in git;
+# only the data READMEs are tracked (listed one level deep, so git never walks the data)
+/data/*
+!/data/README.md
+!/data/hd_epic/
+!/data/ego_exo4d/
+!/data/industreal/
+!/data/partnr/
+/data/hd_epic/*
+/data/ego_exo4d/*
+/data/industreal/*
+/data/partnr/*
+!/data/hd_epic/README.md
+!/data/ego_exo4d/README.md
+!/data/industreal/README.md
+!/data/partnr/README.md
 models/
 runs/
 logs/
+third_party/
 # Credentials
 EgoExoCreds
 *.env
